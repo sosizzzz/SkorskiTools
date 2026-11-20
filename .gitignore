@@ -5,6 +5,10 @@ obj/
 *.user
 *.suo
 
+# Publish and installer output
+publish/
+installer/output/
+
 # Logs and local files
 *.log
 [Dd]esktop.ini

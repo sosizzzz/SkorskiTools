@@ -154,3 +154,19 @@ none are implemented yet.
 
 The *Full Auto* option is visible but permanently disabled and labelled "Coming soon".
 It has no command, no handler and no partial implementation behind it.
+
+## Phase 8 — Distribution
+
+`dotnet publish -r win-x64 --self-contained true` produces the executable, the .NET
+runtime and the whole `resources/` tree next to it. `AppPaths.FindResourcesDirectory`
+walks up from `AppContext.BaseDirectory`, so resources are found both in per-user and
+all-users installations and the working directory is never used.
+
+The Inno Setup script offers a scope choice. Selecting "All users" restarts the
+installer with `runas` and the `/ALLUSERS` parameter, which fixes the target directory
+as `C:\Program Files\Skorski Tools`; "Current user" installs to
+`%LOCALAPPDATA%\Programs\Skorski Tools` with lowest privileges. The app itself never
+requests elevation. No code signing is used in 1.0, so a SmartScreen warning is
+expected. Updates are manual.
+
+`Inno Setup 6.7.3` was installed per user to compile and verify the installer.

@@ -70,10 +70,24 @@ Logs are written to `%LOCALAPPDATA%\Skorski Tools\logs\` with daily rolling file
 5. **Portables** — done: atomic deploy to `%USERPROFILE%\Skorski-Tools\portables\<id>\`, SHA-256 check, desktop shortcut, reinstall and uninstall with a data-loss warning.
 6. **Auxiliary and Scripts** — done: auxiliary files are copied after SHA-256 verification and never executed; scripts are shown read-only with AvalonEdit syntax highlighting and a clipboard copy button. No execution mechanism exists in either section.
 7. **Settings** — done: version, resources/user files/logs paths, manual installation mode, and a disabled *Full Auto* option marked "Coming soon".
-8. Distribution — pending.
+8. **Distribution** — done: self-contained `win-x64` publish with all resources, and an Inno Setup installer with a scope choice (current user / all users).
 9. Final testing — pending.
 
 Each phase is built, verified and committed separately.
+
+## Distribution
+
+Build the self-contained payload and the installer:
+
+```powershell
+dotnet publish src/SkorskiTools.App/SkorskiTools.App.csproj -c Release -r win-x64 --self-contained true -o publish/win-x64
+& "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe" installer\SkorskiTools.iss
+```
+
+The resulting installer is `installer\output\SkorskiTools-Setup.exe`. During setup,
+choose **Current user** (`%LOCALAPPDATA%\Programs\Skorski Tools`, no admin rights)
+or **All users** (`C:\Program Files\Skorski Tools`, UAC prompt). The app itself never
+runs elevated. Updates are manual in 1.0: download and run the new installer.
 
 ## Catalog
 

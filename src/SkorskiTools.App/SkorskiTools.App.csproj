@@ -20,4 +20,12 @@
     <ProjectReference Include="..\SkorskiTools.Core\SkorskiTools.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Original resources ship next to the executable, preserving their layout. -->
+    <None Include="..\..\resources\**\*"
+          Link="resources\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
