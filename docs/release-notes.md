@@ -1,0 +1,34 @@
+# Skorski Tools 1.0.0
+
+First public release of Skorski Tools, a Windows desktop application that centralizes
+installers, browsers, portable applications, helper files and scripts in one place.
+
+## Included
+
+- Dynamic catalog driven by `manifest.json` files and JSON Schemas: add a resource by
+  adding a folder and a manifest, without changing source code.
+- SHA-256 verification, path-safety checks and clear validation errors.
+- Applications: registry / MSI / file / path detection, manual installation,
+  uninstallation and reinstall. Browsers reuse the same logic.
+- Portables: atomic deployment, desktop shortcut, data-loss warning on removal.
+- Auxiliary files: copy only, never executed.
+- Scripts: read-only syntax-highlighted viewer and clipboard copy, never executed.
+- Settings with version, paths and a disabled *Full Auto* placeholder.
+- Self-contained `win-x64` build and Inno Setup installer with a choice between
+  current-user and all-users installation.
+
+## Installation
+
+Download **`SkorskiTools-Setup.exe`** below and run it. Choose the scope during setup:
+
+- **Current user** — installs to `%LOCALAPPDATA%\Programs\Skorski Tools`, no admin rights.
+- **All users** — installs to `C:\Program Files\Skorski Tools`, asks for administrator rights.
+
+Skorski Tools itself never runs as administrator. Installers handle their own UAC
+prompt when needed.
+
+## Notes
+
+- Windows 10 / 11, x64 only.
+- No code signing in 1.0: SmartScreen may show a warning.
+- Updates are manual: download and run the new installer.

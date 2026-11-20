@@ -1,101 +1,176 @@
-# Skorski Tools
+<p align="center">
+  <img src="docs/logo.png" alt="Skorski Tools" width="80" />
+</p>
 
-A personal, extensible Windows desktop application that prepares, maintains and
-configures PCs from a single interface. It centralizes the installers, browsers,
-portable apps, auxiliary files and scripts provided by the owner.
+<h1 align="center">Skorski Tools</h1>
 
-Target: **Windows 10 and Windows 11**. Skorski Tools never runs as administrator.
+<p align="center">
+  <a href="https://github.com/sosizzzz/SkorskiTools/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/release-v1.0.0-2ea44f" alt="Release" /></a>
+  <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?logo=windows&logoColor=white" alt="Windows" />
+  <img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white" alt=".NET" />
+  <img src="https://img.shields.io/badge/architecture-x64-lightgrey" alt="x64" />
+</p>
 
-## Requirements
+<p align="center">
+  <strong>One place to prepare, maintain and configure a Windows PC.</strong><br />
+  Skorski Tools gathers your installers, browsers, portable apps, helper files and scripts
+  behind a single, clean interface. No hunting for installers, no repeating the same setup
+  on every new machine.
+</p>
 
-- .NET 10 SDK (10.0.404 or newer)
-- Windows 10 / 11 with WPF support
+<p align="center">
+  <a href="#installation"><strong>Download the installer</strong></a> ·
+  <a href="#screenshots">Screenshots</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#development">Development</a>
+</p>
 
-> In this development environment the .NET 10 SDK is installed per user at
-> `%LOCALAPPDATA%\Microsoft\dotnet`. The `DOTNET_ROOT` user environment variable
-> points there so the compiled `.exe` finds the .NET 10 runtime. Add that directory
-> to `PATH` before running `dotnet` commands, or use a shell that already includes it.
+---
 
-## Build and test
+## Installation
+
+**[⬇ Download SkorskiTools-Setup.exe (205 MB)](https://github.com/sosizzzz/SkorskiTools/releases/download/v1.0.0/SkorskiTools-Setup.exe)**
+
+Or browse [all releases](https://github.com/sosizzzz/SkorskiTools/releases).
+
+Run the installer and choose the scope when asked:
+
+| Scope | Destination | Requirements |
+|---|---|---|
+| **Current user** (recommended) | `%LOCALAPPDATA%\Programs\Skorski Tools` | No administrator rights |
+| **All users** | `C:\Program Files\Skorski Tools` | UAC confirmation |
+
+Requirements: **Windows 10 or 11, x64**. The .NET 10 runtime is bundled, so nothing
+else needs to be installed.
+
+> Skorski Tools itself **never runs as administrator**. Third-party installers handle
+> their own UAC prompt. The executable is not code-signed in 1.0, so Windows SmartScreen
+> may display a warning — this is expected. Updates are manual: download and run the
+> newer installer.
+
+## Screenshots
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+| Applications | Browsers |
+|---|---|
+| ![Applications](docs/screenshots/applications.png) | ![Browsers](docs/screenshots/browsers.png) |
+
+| Portables | Auxiliary |
+|---|---|
+| ![Portables](docs/screenshots/portables.png) | ![Auxiliary](docs/screenshots/auxiliary.png) |
+
+| Scripts | Settings |
+|---|---|
+| ![Scripts](docs/screenshots/scripts.png) | ![Settings](docs/screenshots/settings.png) |
+
+## Features
+
+- **Dynamic catalog** — resources are discovered from `manifest.json` files and
+  validated against shipped JSON Schemas. Add an app, browser, portable, helper file
+  or script by adding files and a manifest; **no source code changes are required**.
+- **Verified resources** — SHA-256 is checked before any file is used, with path-safety
+  rules that reject absolute paths and `..` traversal. One invalid resource never
+  prevents the rest of the catalog from loading.
+- **Applications** — detection through registry (three uninstall locations), MSI
+  product code, file existence and installation path. Manual install, uninstall with
+  a named confirmation, and repair-style reinstall. Button states always reflect the
+  real detected state, and **Detect applications** re-runs the check.
+- **Browsers** — a separate section that reuses the exact same application logic.
+  Firefox and Chrome are included out of the box.
+- **Portables** — deployed atomically into the user profile, with a desktop shortcut
+  to the real executable. Removal warns about data loss and deletes only that
+  portable's own folder. Nothing is downloaded from the internet.
+- **Auxiliary** — owner-provided files are copied after hash verification, intact.
+  **They are never executed.**
+- **Scripts** — read-only, syntax-highlighted viewer (AvalonEdit) with a one-click
+  clipboard copy. **Scripts are never executed.**
+- **Transparency** — Serilog rolling logs in `%LOCALAPPDATA%\Skorski Tools\logs\`
+  record operations, detection results, invalid manifests and hash mismatches.
+- **Dark Fluent UI** — built with WPF and WPF-UI, designed for clarity and speed.
+
+## Adding a resource
+
+Everything the app shows comes from `resources/`:
+
+```text
+resources/
+├── categories.json
+├── schemas/                     JSON Schemas for every manifest type
+├── installers/<id>/manifest.json + installer files
+├── browsers/<id>/manifest.json   + installer files
+├── portables/<id>/manifest.json  + package and executable
+├── auxiliary/<id>/manifest.json  + helper files
+└── scripts/scripts.json
+```
+
+Drop a valid manifest in the right folder and press **Reload catalog** in the
+sidebar — the item appears automatically. See [`docs/decisions.md`](docs/decisions.md)
+for the manifest rules.
+
+## Project structure
+
+```text
+src/
+├── SkorskiTools.Core/     models, validation, detection and services (no UI)
+├── SkorskiTools.App/      WPF views, view models, themes, behaviors and assets
+└── SkorskiTools.Tests/    xUnit tests for Core
+resources/                 catalog data and original owner-provided files
+installer/                 Inno Setup script
+docs/                      decisions, verification report and screenshots
+```
+
+Architecture is MVVM with CommunityToolkit.Mvvm. Business logic lives in Core and
+system operations are behind interfaces so they can be tested. There is no business
+logic in visual controls.
+
+## Development
+
+Requirements: .NET SDK 10.0+ on Windows.
 
 ```powershell
+git clone https://github.com/sosizzzz/SkorskiTools.git
+cd SkorskiTools
+
 dotnet restore SkorskiTools.sln
 dotnet build SkorskiTools.sln -c Debug
 dotnet test SkorskiTools.sln -c Debug
-dotnet run --project src/SkorskiTools.App/SkorskiTools.App.csproj
 ```
 
-To just launch the already-built Debug app, double-click **`run-app.cmd`** in the
-repository root. It sets `DOTNET_ROOT` and `PATH` for the current process and starts
-`SkorskiTools.App.exe`. Alternatively, from PowerShell:
+For a quick launch of the already-built Debug app, double-click `run-app.cmd`.
 
-```powershell
-$env:DOTNET_ROOT = "$env:LOCALAPPDATA\Microsoft\dotnet"
-$env:PATH = "$env:DOTNET_ROOT;$env:PATH"
-& '.\src\SkorskiTools.App\bin\Debug\net10.0-windows\SkorskiTools.App.exe'
-```
-
-## Solution layout
-
-| Path | Purpose |
-|---|---|
-| `src/SkorskiTools.Core` | Models, validation, detection and services (no UI) |
-| `src/SkorskiTools.App` | WPF application: Views, ViewModels, Controls, Themes |
-| `src/SkorskiTools.Tests` | xUnit tests for Core |
-| `resources/` | Manifests, schemas and original resource files |
-| `docs/decisions.md` | Technical decisions and deviations |
-| `installer/` | Inno Setup script (Phase 8) |
-
-## User folders
-
-On first launch the app creates, even when empty:
-
-```
-%USERPROFILE%\Skorski-Tools\
-├── auxiliary/
-├── installers/
-├── portables/
-├── browsers/
-└── scripts/
-```
-
-Logs are written to `%LOCALAPPDATA%\Skorski Tools\logs\` with daily rolling files.
-
-## Development phases
-
-1. **Foundation** — in progress: solution, .NET 10 + WPF, MVVM, navigation, dark theme, user folders, logging.
-2. **Dynamic catalog** — done: JSON Schemas, manifest validation, SHA-256, path safety, discovery, categories, icons, search and category filters.
-3. **Applications** — done: registry/MSI/file/path detection, manual install, uninstall with confirmation, reinstall (repair/upgrade), button states and *Detect applications* button. Browsers reuse the same code.
-4. **Browsers** — done: independent catalog entry and navigation item using the same application model and actions. Firefox and Chrome are included; adding another browser only needs a manifest. No browser configuration actions in 1.0.
-5. **Portables** — done: atomic deploy to `%USERPROFILE%\Skorski-Tools\portables\<id>\`, SHA-256 check, desktop shortcut, reinstall and uninstall with a data-loss warning.
-6. **Auxiliary and Scripts** — done: auxiliary files are copied after SHA-256 verification and never executed; scripts are shown read-only with AvalonEdit syntax highlighting and a clipboard copy button. No execution mechanism exists in either section.
-7. **Settings** — done: version, resources/user files/logs paths, manual installation mode, and a disabled *Full Auto* option marked "Coming soon".
-8. **Distribution** — done: self-contained `win-x64` publish with all resources, and an Inno Setup installer with a scope choice (current user / all users).
-9. **Final testing** — done: all sections, detection, button states, script copy, auxiliary copy, robustness, permissions and clean publish verified. See `docs/verification.md`.
-
-Each phase is built, verified and committed separately.
-
-## Distribution
-
-Build the self-contained payload and the installer:
+To produce the release artifacts:
 
 ```powershell
 dotnet publish src/SkorskiTools.App/SkorskiTools.App.csproj -c Release -r win-x64 --self-contained true -o publish/win-x64
 & "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe" installer\SkorskiTools.iss
 ```
 
-The resulting installer is `installer\output\SkorskiTools-Setup.exe`. During setup,
-choose **Current user** (`%LOCALAPPDATA%\Programs\Skorski Tools`, no admin rights)
-or **All users** (`C:\Program Files\Skorski Tools`, UAC prompt). The app itself never
-runs elevated. Updates are manual in 1.0: download and run the new installer.
+The installer is written to `installer\output\SkorskiTools-Setup.exe`.
 
-## Catalog
+## Security model
 
-Resources are discovered automatically from `resources/<section>/<resource>/manifest.json`.
-Each manifest is validated against the matching JSON Schema in `resources/schemas/`,
-plus project rules (unique ids, known categories, safe relative paths, existing files
-and matching SHA-256). An invalid resource is reported and skipped; it never stops the
-rest of the catalog. The **Reload catalog** button in the sidebar re-runs discovery.
+- Least privilege: the app never requests elevation; installers do it themselves.
+- No arbitrary code from manifests; scripts and auxiliary files are never run.
+- Arguments are passed as lists, never concatenated strings.
+- Destructive operations require an explicit, named confirmation.
+- Files outside the planned user folders are not modified.
 
-Scripts live in `resources/scripts/scripts.json` and are shown read-only. They are
-never executed, and neither are auxiliary files.
+## Documentation
+
+- [Technical decisions](docs/decisions.md)
+- [Final verification report](docs/verification.md)
+- [Release notes](docs/release-notes.md)
+
+## Roadmap (after 1.0)
+
+- **Skorski's Config** — optional, user-level browser configuration (not enterprise policy).
+- **Full Auto** — optional unattended installation.
+
+Both are intentionally absent from 1.0: there is no placeholder button or partial
+implementation that could be activated by accident.
+
+---
+
+Personal project by [@sosizzzz](https://github.com/sosizzzz), built as a portfolio
+showcase.
