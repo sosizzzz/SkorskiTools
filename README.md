@@ -25,6 +25,16 @@ dotnet test SkorskiTools.sln -c Debug
 dotnet run --project src/SkorskiTools.App/SkorskiTools.App.csproj
 ```
 
+To just launch the already-built Debug app, double-click **`run-app.cmd`** in the
+repository root. It sets `DOTNET_ROOT` and `PATH` for the current process and starts
+`SkorskiTools.App.exe`. Alternatively, from PowerShell:
+
+```powershell
+$env:DOTNET_ROOT = "$env:LOCALAPPDATA\Microsoft\dotnet"
+$env:PATH = "$env:DOTNET_ROOT;$env:PATH"
+& '.\src\SkorskiTools.App\bin\Debug\net10.0-windows\SkorskiTools.App.exe'
+```
+
 ## Solution layout
 
 | Path | Purpose |

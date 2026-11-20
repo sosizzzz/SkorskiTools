@@ -54,8 +54,8 @@
                     <Border x:Name="Bd"
                             Background="{TemplateBinding Background}"
                             CornerRadius="6"
-                            Padding="10,9"
-                            Margin="10,2">
+                            Padding="10,7"
+                            Margin="10,1">
                         <ContentPresenter VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>

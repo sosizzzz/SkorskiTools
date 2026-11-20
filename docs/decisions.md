@@ -69,3 +69,17 @@ needed. Detection is not executed in Phase 2.
 ### Scripts
 `resources/scripts/scripts.json` was created from the owner's `scripts.md` content.
 Skorski Tools only displays and copies this code; it never runs it.
+
+### Main window rendering fix
+The WPF template left a second, empty `MainWindow` in the project root. Because
+`App.xaml.cs` lives in `SkorskiTools.App`, unqualified `new MainWindow()` resolved
+to that template class instead of `SkorskiTools.App.Views.MainWindow`, so the app
+showed a blank 800x450 window. The template files were deleted.
+
+WPF-UI's Mica backdrop also requires `ExtendsContentIntoTitleBar="True"`; otherwise
+it throws at runtime. A `ui:TitleBar` was added to the window.
+
+`WindowStartupLocation="CenterScreen"` chose the secondary monitor in this
+multi-monitor setup, and a 1200x760 window exceeded the primary work area at 125%
+DPI scaling. The window is now explicitly centered on the primary monitor and sized
+to 1100x640.

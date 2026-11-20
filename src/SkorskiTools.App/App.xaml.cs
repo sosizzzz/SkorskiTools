@@ -30,9 +30,13 @@ public partial class App : Application
         MainWindow = new MainWindow { DataContext = mainViewModel };
         MainWindow.Show();
 
-        // WPF-UI's FluentWindow resets Title while its template is applied,
-        // so the final value must be set after the window is shown.
-        MainWindow.Title = AppPaths.ApplicationName;
+        // CenterScreen can pick the monitor that currently owns focus. Always
+        // place the main window on the primary display so it is visible on launch.
+        var workArea = SystemParameters.WorkArea;
+        MainWindow.Width = Math.Min(MainWindow.Width, workArea.Width);
+        MainWindow.Height = Math.Min(MainWindow.Height, workArea.Height);
+        MainWindow.Left = workArea.Left + Math.Max(0, (workArea.Width - MainWindow.Width) / 2);
+        MainWindow.Top = workArea.Top + Math.Max(0, (workArea.Height - MainWindow.Height) / 2);
 
         Log.Information(
             "Main window shown on {Page} with {Count} navigation items",
