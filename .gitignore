@@ -1,0 +1,24 @@
+# Build output
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Logs and local files
+*.log
+[Dd]esktop.ini
+Thumbs.db
+
+# Owner-provided original package (left untouched; files copied into resources/)
+Utilidades 1.0/
+
+# Original resource payloads are supplied by the owner, not versioned.
+# Manifests, schemas, lists and .gitkeep files remain tracked.
+resources/**/*.exe
+resources/**/*.msi
+resources/**/*.zip
+resources/**/*.cmd
+resources/**/*.js
+resources/**/*.mozlz4
+resources/**/*.xpi

@@ -1,0 +1,16 @@
+<UserControl x:Class="SkorskiTools.App.Views.Pages.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="900">
+    <StackPanel Margin="30,26">
+        <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitleStyle}" />
+        <TextBlock Text="{Binding Subtitle}" Style="{StaticResource PageSubtitleStyle}" />
+        <Border Style="{StaticResource InfoPanelStyle}" Margin="0,26,0,0">
+            <TextBlock Style="{StaticResource PlaceholderTextStyle}"
+                       Text="Version information, paths and preferences are implemented in Phase 7." />
+        </Border>
+    </StackPanel>
+</UserControl>

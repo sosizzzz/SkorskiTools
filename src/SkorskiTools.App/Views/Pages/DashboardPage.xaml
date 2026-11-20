@@ -1,0 +1,28 @@
+<UserControl x:Class="SkorskiTools.App.Views.Pages.DashboardPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="900">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="30,26">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitleStyle}" />
+            <TextBlock Text="{Binding Subtitle}" Style="{StaticResource PageSubtitleStyle}" />
+
+            <Border Style="{StaticResource InfoPanelStyle}" Margin="0,26,0,0">
+                <StackPanel>
+                    <TextBlock Text="Welcome" FontSize="16" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    <TextBlock Margin="0,10,0,0" Style="{StaticResource PlaceholderTextStyle}"
+                               Text="Skorski Tools keeps your installers, browsers, portable apps, auxiliary files and scripts in one place. Choose a section from the side navigation to get started." />
+                    <Border Height="1" Background="#14FFFFFF" Margin="0,18" />
+                    <TextBlock Text="Development status" FontSize="13" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource PlaceholderTextStyle}"
+                               Text="Foundation phase: navigation, theme, user folders and logging are active. The catalog and actions are added in the following phases." />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,10 @@
+{
+  "categories": [
+    { "id": "system", "name": "System", "icon": "system.png" },
+    { "id": "development", "name": "Development" },
+    { "id": "utilities", "name": "Utilities" },
+    { "id": "multimedia", "name": "Multimedia" },
+    { "id": "networking", "name": "Networking" },
+    { "id": "other", "name": "Other" }
+  ]
+}
