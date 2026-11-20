@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "activation-tools",
+  "name": "Activation Tools",
+  "description": "Helper files provided by the owner. Skorski Tools only copies them; it never runs them.",
+  "category": "system",
+  "files": [
+    { "file": "MAS_AIO.cmd", "sha256": "fdb7d70ae8a9577c5c6b0b2947ed93e664ac4e2c7a58bbf3db9abe9d2f6b9f01" },
+    { "file": "Microsoft-Activation-Scripts.zip", "sha256": "db4bbd70313a18d4eff02a382ec02f463e31709a0d9d1ad3acebfdb93a4bb1f0" }
+  ]
+}

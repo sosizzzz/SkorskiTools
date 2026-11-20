@@ -52,7 +52,9 @@
                 </ListBox>
 
                 <StackPanel DockPanel.Dock="Bottom" Margin="20,16">
-                    <TextBlock Text="{Binding StatusText}"
+                    <ui:Button Content="Reload catalog" HorizontalAlignment="Stretch"
+                               Command="{Binding RefreshCatalogCommand}" />
+                    <TextBlock Text="{Binding StatusText}" Margin="0,12,0,0"
                                Style="{StaticResource SidebarLabelStyle}" />
                     <TextBlock Text="{Binding VersionText}" Margin="0,6,0,0"
                                Style="{StaticResource SidebarLabelStyle}" />

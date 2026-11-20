@@ -26,7 +26,7 @@ public partial class App : Application
             "User folders ready at {Root}. Created: {CreatedCount}, existing: {ExistingCount}",
             folders.RootPath, folders.CreatedFolders.Count, folders.ExistingFolders.Count);
 
-        var mainViewModel = new MainViewModel(folders);
+        var mainViewModel = new MainViewModel(folders, new ResourceCatalogService());
         MainWindow = new MainWindow { DataContext = mainViewModel };
         MainWindow.Show();
 
@@ -37,6 +37,8 @@ public partial class App : Application
         Log.Information(
             "Main window shown on {Page} with {Count} navigation items",
             mainViewModel.CurrentPage.Title, mainViewModel.NavigationItems.Count);
+
+        _ = mainViewModel.LoadCatalogAsync();
     }
 
     protected override void OnExit(ExitEventArgs e)

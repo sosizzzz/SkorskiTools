@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "anydesk-portable",
+  "name": "AnyDesk Portable",
+  "description": "Remote access tool (standalone executable).",
+  "version": "",
+  "category": "networking",
+  "package": {
+    "file": "AnyDesk.exe",
+    "sha256": "3f5a98b1a162ae3b3adf07df38cd554943e79919ff4ae90b44f392959887da22"
+  },
+  "executable": "AnyDesk.exe",
+  "shortcutName": "AnyDesk Portable"
+}

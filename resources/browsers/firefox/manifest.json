@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "firefox",
+  "name": "Mozilla Firefox",
+  "description": "Web browser.",
+  "version": "",
+  "category": "networking",
+  "files": [
+    { "file": "Firefox Installer.exe", "sha256": "f41b713157a999efb9db3e0e392fa61bfa8e6d96cd857101acf91425d3fe6cb5", "arch": "any" }
+  ],
+  "detection": {
+    "type": "registry",
+    "displayName": "Firefox",
+    "matchMode": "startsWith"
+  },
+  "installation": { "arguments": [] },
+  "uninstallation": { "mode": "registered-uninstaller" }
+}

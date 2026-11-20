@@ -1,6 +1,6 @@
 namespace SkorskiTools.App.ViewModels.Pages;
 
-public sealed class PortablesViewModel : ViewModelBase
+public sealed class PortablesViewModel : CatalogListViewModel
 {
     public override string Title => "Portables";
 

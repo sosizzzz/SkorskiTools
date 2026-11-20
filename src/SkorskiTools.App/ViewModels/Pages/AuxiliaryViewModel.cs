@@ -1,6 +1,6 @@
 namespace SkorskiTools.App.ViewModels.Pages;
 
-public sealed class AuxiliaryViewModel : ViewModelBase
+public sealed class AuxiliaryViewModel : CatalogListViewModel
 {
     public override string Title => "Auxiliary";
 

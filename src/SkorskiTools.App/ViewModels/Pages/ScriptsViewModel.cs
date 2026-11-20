@@ -1,6 +1,6 @@
 namespace SkorskiTools.App.ViewModels.Pages;
 
-public sealed class ScriptsViewModel : ViewModelBase
+public sealed class ScriptsViewModel : CatalogListViewModel
 {
     public override string Title => "Scripts";
 

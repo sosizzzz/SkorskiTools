@@ -3,14 +3,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="900">
-    <StackPanel Margin="30,26">
+             d:DesignHeight="520" d:DesignWidth="900">
+    <Grid Margin="28,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
         <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitleStyle}" />
-        <TextBlock Text="{Binding Subtitle}" Style="{StaticResource PageSubtitleStyle}" />
-        <Border Style="{StaticResource InfoPanelStyle}" Margin="0,26,0,0">
-            <TextBlock Style="{StaticResource PlaceholderTextStyle}"
-                       Text="Browser management reuses the Applications logic and is implemented in Phase 4." />
-        </Border>
-    </StackPanel>
+        <TextBlock Grid.Row="1" Text="{Binding Subtitle}" Style="{StaticResource PageSubtitleStyle}" />
+
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="180" />
+                </Grid.ColumnDefinitions>
+                <ui:TextBox PlaceholderText="Search browsers..."
+                            Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                <ComboBox Grid.Column="1" Margin="10,0,0,0"
+                          ItemsSource="{Binding Categories}"
+                          SelectedItem="{Binding SelectedCategory}" />
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <ListBox ItemsSource="{Binding ItemsView}"
+                         SelectedItem="{Binding SelectedItem}"
+                         ItemTemplate="{StaticResource ResourceItemTemplate}"
+                         Background="Transparent" BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                <TextBlock Text="{Binding EmptyMessage}" HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource PlaceholderTextStyle}"
+                           Visibility="{Binding HasItems, Converter={StaticResource InverseBoolToVisibility}}" />
+            </Grid>
+        </Grid>
+    </Grid>
 </UserControl>

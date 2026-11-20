@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skorski.tools/schemas/scripts.schema.json",
+  "title": "Scripts",
+  "type": "object",
+  "required": ["schemaVersion", "scripts"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "scripts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "language", "code"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "title": { "type": "string", "minLength": 1 },
+          "description": { "type": "string" },
+          "language": { "type": "string", "minLength": 1 },
+          "code": { "type": "string" }
+        }
+      }
+    }
+  }
+}

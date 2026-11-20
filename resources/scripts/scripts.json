@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "scripts": [
+    {
+      "id": "cris-titus-optimizations",
+      "title": "Cris Titus Optimizations",
+      "description": "Downloads and applies the community Windows optimization script.",
+      "language": "powershell",
+      "code": "irm https://christitus.com/win | iex"
+    },
+    {
+      "id": "activation-tool",
+      "title": "Activation Tool",
+      "description": "Opens the activation helper. Option 1 activates Windows, option 2 activates Office (Office must be installed first).",
+      "language": "powershell",
+      "code": "irm https://get.activated.win | iex"
+    }
+  ]
+}

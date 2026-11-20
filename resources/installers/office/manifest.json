@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "office",
+  "name": "Microsoft Office",
+  "description": "Office setup provided by the owner.",
+  "version": "",
+  "category": "other",
+  "files": [
+    { "file": "OfficeSetup.exe", "sha256": "bd89bf2b53d45f433644e419049f3ed6e5ead8aa0915c8d41df27585e8dc5b61", "arch": "any" }
+  ],
+  "detection": {
+    "type": "registry",
+    "displayName": "Microsoft Office",
+    "matchMode": "startsWith"
+  },
+  "installation": { "arguments": [] },
+  "uninstallation": { "mode": "registered-uninstaller" }
+}

@@ -9,6 +9,7 @@ public static class AppPaths
     public const string ApplicationName = "Skorski Tools";
     public const string UserRootFolderName = "Skorski-Tools";
     public const string ResourcesFolderName = "resources";
+    public const string SchemasFolderName = "schemas";
 
     /// <summary>Folders created in the user profile on first launch.</summary>
     public static IReadOnlyList<string> UserFolderNames { get; } =

@@ -17,10 +17,15 @@
                     <TextBlock Margin="0,10,0,0" Style="{StaticResource PlaceholderTextStyle}"
                                Text="Skorski Tools keeps your installers, browsers, portable apps, auxiliary files and scripts in one place. Choose a section from the side navigation to get started." />
                     <Border Height="1" Background="#14FFFFFF" Margin="0,18" />
+                    <TextBlock Text="Catalog" FontSize="13" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Margin="0,6,0,0" Style="{StaticResource PlaceholderTextStyle}"
+                               Text="{Binding CatalogSummary}" />
+                    <Border Height="1" Background="#14FFFFFF" Margin="0,18" />
                     <TextBlock Text="Development status" FontSize="13" FontWeight="SemiBold"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                     <TextBlock Margin="0,6,0,0" Style="{StaticResource PlaceholderTextStyle}"
-                               Text="Foundation phase: navigation, theme, user folders and logging are active. The catalog and actions are added in the following phases." />
+                               Text="Catalog discovery, validation and search are active. Installation actions are added in the following phases." />
                 </StackPanel>
             </Border>
         </StackPanel>

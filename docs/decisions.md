@@ -46,3 +46,26 @@ the files should be copied, so their contents now also live in `resources/`:
 
 Original file names are preserved. Binary payloads are ignored by Git to avoid
 committing large third-party installers; manifests, schemas and lists stay tracked.
+Each resource now has its own subdirectory containing `manifest.json` plus its files,
+matching the discovery rule in the specification.
+
+## Phase 2 — Dynamic catalog
+
+### JSON Schema dependency
+`JsonSchema.Net` 9.7.0 was added to Core. It is not in the original dependency list,
+but the specification explicitly requires validating manifests against the shipped
+JSON Schemas. Custom rules (unique ids, path safety, file existence, SHA-256,
+categories) are implemented in C# because they cannot be expressed in JSON Schema.
+
+### SHA-256 timing
+Hashes are verified during discovery, not only at install time. The catalog is loaded
+on a background thread so hashing bundled files does not block the UI.
+
+### Provisional detection values
+The `detection.displayName` values in the manifests are based on the published product
+names. They will be checked against real registry entries in Phase 3 and corrected if
+needed. Detection is not executed in Phase 2.
+
+### Scripts
+`resources/scripts/scripts.json` was created from the owner's `scripts.md` content.
+Skorski Tools only displays and copies this code; it never runs it.

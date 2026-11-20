@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "flow-launcher",
+  "name": "Flow Launcher",
+  "description": "Fast launcher for searching files, apps and commands.",
+  "version": "",
+  "category": "utilities",
+  "files": [
+    { "file": "Flow-Launcher-Setup.exe", "sha256": "0e7b4ea82192702a98a10f8ec257c3830f6591b80517d291a83854c0df54fc20", "arch": "any" }
+  ],
+  "detection": {
+    "type": "registry",
+    "displayName": "Flow Launcher",
+    "matchMode": "startsWith"
+  },
+  "installation": { "arguments": [] },
+  "uninstallation": { "mode": "registered-uninstaller" }
+}

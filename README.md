@@ -54,7 +54,7 @@ Logs are written to `%LOCALAPPDATA%\Skorski Tools\logs\` with daily rolling file
 ## Development phases
 
 1. **Foundation** — in progress: solution, .NET 10 + WPF, MVVM, navigation, dark theme, user folders, logging.
-2. Dynamic catalog — pending.
+2. **Dynamic catalog** — done: JSON Schemas, manifest validation, SHA-256, path safety, discovery, categories, icons, search and category filters.
 3. Applications — pending.
 4. Browsers — pending.
 5. Portables — pending.
@@ -64,3 +64,14 @@ Logs are written to `%LOCALAPPDATA%\Skorski Tools\logs\` with daily rolling file
 9. Final testing — pending.
 
 Each phase is built, verified and committed separately.
+
+## Catalog
+
+Resources are discovered automatically from `resources/<section>/<resource>/manifest.json`.
+Each manifest is validated against the matching JSON Schema in `resources/schemas/`,
+plus project rules (unique ids, known categories, safe relative paths, existing files
+and matching SHA-256). An invalid resource is reported and skipped; it never stops the
+rest of the catalog. The **Reload catalog** button in the sidebar re-runs discovery.
+
+Scripts live in `resources/scripts/scripts.json` and are shown read-only. They are
+never executed, and neither are auxiliary files.

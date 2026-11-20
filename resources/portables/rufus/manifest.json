@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "rufus-portable",
+  "name": "Rufus Portable",
+  "description": "USB formatting and bootable media creation tool.",
+  "version": "4.16p",
+  "category": "utilities",
+  "package": {
+    "file": "rufus-4.16p.exe",
+    "sha256": "8351a56c134aa6dd26a930d702cc3fd57f11ef90b17e55a8de960d5a73d46cfc"
+  },
+  "executable": "rufus-4.16p.exe",
+  "shortcutName": "Rufus Portable"
+}

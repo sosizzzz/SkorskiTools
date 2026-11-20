@@ -1,6 +1,6 @@
 namespace SkorskiTools.App.ViewModels.Pages;
 
-public sealed class BrowsersViewModel : ViewModelBase
+public sealed class BrowsersViewModel : CatalogListViewModel
 {
     public override string Title => "Browsers";
 

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skorski.tools/schemas/application.schema.json",
+  "title": "Application or browser manifest",
+  "type": "object",
+  "required": ["schemaVersion", "id", "name", "files"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "version": { "type": "string" },
+    "category": { "type": "string" },
+    "icon": { "type": "string" },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/file" }
+    },
+    "detection": { "$ref": "#/$defs/detection" },
+    "installation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "arguments": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "uninstallation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "enum": ["registered-uninstaller", "msi-product-code"] },
+        "productCode": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "required": ["file", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "file": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+        "arch": { "enum": ["x64", "x86", "arm64", "any"] }
+      }
+    },
+    "detection": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": ["registry", "msi-product-code", "file-exists", "path"]
+        },
+        "displayName": { "type": "string" },
+        "matchMode": { "enum": ["exact", "startsWith"] },
+        "productCode": { "type": "string" },
+        "path": { "type": "string" },
+        "executable": { "type": "string" }
+      }
+    }
+  }
+}
