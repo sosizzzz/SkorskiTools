@@ -71,7 +71,7 @@ Logs are written to `%LOCALAPPDATA%\Skorski Tools\logs\` with daily rolling file
 6. **Auxiliary and Scripts** — done: auxiliary files are copied after SHA-256 verification and never executed; scripts are shown read-only with AvalonEdit syntax highlighting and a clipboard copy button. No execution mechanism exists in either section.
 7. **Settings** — done: version, resources/user files/logs paths, manual installation mode, and a disabled *Full Auto* option marked "Coming soon".
 8. **Distribution** — done: self-contained `win-x64` publish with all resources, and an Inno Setup installer with a scope choice (current user / all users).
-9. Final testing — pending.
+9. **Final testing** — done: all sections, detection, button states, script copy, auxiliary copy, robustness, permissions and clean publish verified. See `docs/verification.md`.
 
 Each phase is built, verified and committed separately.
 

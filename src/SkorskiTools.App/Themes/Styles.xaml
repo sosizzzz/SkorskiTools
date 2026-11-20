@@ -223,6 +223,7 @@
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                     </Border>
                     <ui:Button Padding="8,4" FontSize="12"
+                               AutomationProperties.Name="Copy script"
                                ToolTip="Copy script to clipboard"
                                Command="{Binding DataContext.CopyCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                CommandParameter="{Binding}">
