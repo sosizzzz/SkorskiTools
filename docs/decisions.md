@@ -116,3 +116,17 @@ dropping a manifest into `resources/browsers/<id>/` with its installer.
 
 "Skorski's Config" is explicitly out of scope for 1.0: there is no button,
 placeholder or partial implementation for it.
+
+## Phase 5 — Portables
+
+Portables are deployed into `%USERPROFILE%\Skorski-Tools\portables\<id>\`. The
+package is validated (path and SHA-256), extracted or copied into a temporary
+directory, and only then moved into place. The desktop shortcut is built after the
+move and points to the final executable, never to the temporary one.
+
+Uninstall deletes only the portable's own folder and its shortcut. The confirmation
+states that any data inside the portable's folder will be lost. Reinstall replaces
+the folder with the bundled version; nothing is downloaded.
+
+Shortcut creation goes through `IShortcutService`, so tests use a fake and no real
+desktop shortcut is created during the test run.

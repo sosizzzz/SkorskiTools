@@ -46,6 +46,7 @@ public sealed partial class MainViewModel : ViewModelBase
         IResourceCatalogService? catalogService = null,
         IInstallationDetector? detector = null,
         IApplicationInstaller? installer = null,
+        IPortableService? portables = null,
         IConfirmationService? confirmation = null)
     {
         UserFolders = userFolders;
@@ -58,7 +59,7 @@ public sealed partial class MainViewModel : ViewModelBase
         _dashboard = new DashboardViewModel();
         _applications = new ApplicationsViewModel(installationDetector, applicationInstaller, confirmationService);
         _browsers = new BrowsersViewModel(installationDetector, applicationInstaller, confirmationService);
-        _portables = new PortablesViewModel();
+        _portables = new PortablesViewModel(portables ?? new PortableService(), confirmationService);
         _auxiliary = new AuxiliaryViewModel();
         _scripts = new ScriptsViewModel();
 
@@ -104,7 +105,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
             _applications.SetApplications(catalog.Applications, categoryNames);
             _browsers.SetApplications(catalog.Browsers, categoryNames);
-            _portables.Load(catalog.Portables.Select(m => ResourceItemViewModel.From(m, categoryNames)));
+            _portables.SetPortables(catalog.Portables, categoryNames);
             _auxiliary.Load(catalog.Auxiliary.Select(m => ResourceItemViewModel.From(m, categoryNames)));
             _scripts.Load(catalog.Scripts.Select(ResourceItemViewModel.FromScript));
 
@@ -135,7 +136,10 @@ public sealed partial class MainViewModel : ViewModelBase
     public async Task LoadCatalogAndDetectAsync()
     {
         await LoadCatalogAsync();
-        await Task.WhenAll(_applications.DetectAllAsync(), _browsers.DetectAllAsync());
+        await Task.WhenAll(
+            _applications.DetectAllAsync(),
+            _browsers.DetectAllAsync(),
+            _portables.DetectAllAsync());
     }
 
     [RelayCommand]

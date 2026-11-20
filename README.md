@@ -67,7 +67,7 @@ Logs are written to `%LOCALAPPDATA%\Skorski Tools\logs\` with daily rolling file
 2. **Dynamic catalog** — done: JSON Schemas, manifest validation, SHA-256, path safety, discovery, categories, icons, search and category filters.
 3. **Applications** — done: registry/MSI/file/path detection, manual install, uninstall with confirmation, reinstall (repair/upgrade), button states and *Detect applications* button. Browsers reuse the same code.
 4. **Browsers** — done: independent catalog entry and navigation item using the same application model and actions. Firefox and Chrome are included; adding another browser only needs a manifest. No browser configuration actions in 1.0.
-5. Portables — pending.
+5. **Portables** — done: atomic deploy to `%USERPROFILE%\Skorski-Tools\portables\<id>\`, SHA-256 check, desktop shortcut, reinstall and uninstall with a data-loss warning.
 6. Auxiliary and Scripts — pending.
 7. Settings — pending.
 8. Distribution — pending.
