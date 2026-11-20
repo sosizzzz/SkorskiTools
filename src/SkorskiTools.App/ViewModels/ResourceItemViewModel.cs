@@ -11,6 +11,7 @@ public sealed class ResourceItemViewModel : ObservableObject
     private bool _isInstalled;
     private string? _installedVersion;
     private string _detectionSource = string.Empty;
+    private string? _customStatus;
 
     private ResourceItemViewModel()
     {
@@ -67,11 +68,23 @@ public sealed class ResourceItemViewModel : ObservableObject
     public bool CanUninstall => IsInstalled;
     public bool CanReinstall => IsInstalled;
 
-    public string StatusText => IsInstalled
-        ? string.IsNullOrWhiteSpace(InstalledVersion)
-            ? "Installed"
-            : $"Installed {InstalledVersion}"
-        : "Not installed";
+    public string? CustomStatus
+    {
+        get => _customStatus;
+        set
+        {
+            if (SetProperty(ref _customStatus, value))
+                OnPropertyChanged(nameof(StatusText));
+        }
+    }
+
+    public string StatusText => !string.IsNullOrWhiteSpace(CustomStatus)
+        ? CustomStatus
+        : IsInstalled
+            ? string.IsNullOrWhiteSpace(InstalledVersion)
+                ? "Installed"
+                : $"Installed {InstalledVersion}"
+            : "Not installed";
 
     public static ResourceItemViewModel From(
         ManifestBase manifest,

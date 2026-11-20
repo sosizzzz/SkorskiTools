@@ -130,3 +130,18 @@ the folder with the bundled version; nothing is downloaded.
 
 Shortcut creation goes through `IShortcutService`, so tests use a fake and no real
 desktop shortcut is created during the test run.
+
+## Phase 6 — Auxiliary and Scripts
+
+Auxiliary files are copied into `%USERPROFILE%\Skorski-Tools\auxiliary\<id>\` after
+SHA-256 verification. A per-resource subfolder avoids name collisions between
+resources. There is no run button and no execution path for these files.
+
+Scripts come only from `resources/scripts/scripts.json`. The editor is AvalonEdit in
+read-only mode. AvalonEdit 6.3.1 does not expose `Text` as a dependency property, so
+the code and the language are applied through attached properties
+(`SyntaxHighlightingBehavior`). The only action is copying the full code to the
+clipboard; scripts are never executed.
+
+`AvalonEdit` was added to the dependency list because the specification requires
+syntax highlighting in the Scripts view.

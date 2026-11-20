@@ -60,7 +60,8 @@
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal"
+                                        AutomationProperties.Name="{Binding Title}">
                                 <ui:SymbolIcon Symbol="{Binding Glyph}" FontSize="18" Width="22"
                                                VerticalAlignment="Center" />
                                 <TextBlock Text="{Binding Title}" FontSize="13" Margin="12,0,0,0"

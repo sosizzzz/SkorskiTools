@@ -48,6 +48,7 @@
         <Setter Property="Margin" Value="0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
@@ -152,6 +153,81 @@
                                IsEnabled="{Binding CanReinstall}"
                                Command="{Binding DataContext.ReinstallCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                CommandParameter="{Binding}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <!-- Auxiliary row: only a Download button; files are never executed. -->
+    <DataTemplate x:Key="AuxiliaryItemTemplate" DataType="{x:Type vm:ResourceItemViewModel}">
+        <Border Padding="14,10" Margin="0,0,0,6" CornerRadius="8"
+                Background="#0FFFFFFF" BorderBrush="#14FFFFFF" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ui:SymbolIcon Grid.Column="0" Symbol="{Binding Glyph}" FontSize="26"
+                               VerticalAlignment="Center" />
+
+                <StackPanel Grid.Column="1" Margin="8,0,12,0">
+                    <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    <TextBlock Text="{Binding Description}" FontSize="12"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Text="{Binding FilesText}" FontSize="11" Margin="0,3,0,0"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding StatusText}" FontSize="11" Margin="0,0,10,0"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                    <ui:Button Content="Download" Padding="8,4" FontSize="12"
+                               Command="{Binding DataContext.CopyCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                               CommandParameter="{Binding}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <!-- Script row: copy icon on the right, no execution control. -->
+    <DataTemplate x:Key="ScriptItemTemplate" DataType="{x:Type vm:ResourceItemViewModel}">
+        <Border Padding="14,10" Margin="0,0,0,6" CornerRadius="8"
+                Background="#0FFFFFFF" BorderBrush="#14FFFFFF" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ui:SymbolIcon Grid.Column="0" Symbol="{Binding Glyph}" FontSize="26"
+                               VerticalAlignment="Center" />
+
+                <StackPanel Grid.Column="1" Margin="8,0,12,0">
+                    <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    <TextBlock Text="{Binding Description}" FontSize="12"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#1AFFFFFF" CornerRadius="4" Padding="6,2" Margin="0,0,10,0">
+                        <TextBlock Text="{Binding StatusText}" FontSize="11"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </Border>
+                    <ui:Button Padding="8,4" FontSize="12"
+                               ToolTip="Copy script to clipboard"
+                               Command="{Binding DataContext.CopyCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                               CommandParameter="{Binding}">
+                        <ui:SymbolIcon Symbol="Copy24" FontSize="16" />
+                    </ui:Button>
                 </StackPanel>
             </Grid>
         </Border>

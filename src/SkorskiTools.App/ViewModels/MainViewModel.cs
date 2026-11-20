@@ -47,6 +47,7 @@ public sealed partial class MainViewModel : ViewModelBase
         IInstallationDetector? detector = null,
         IApplicationInstaller? installer = null,
         IPortableService? portables = null,
+        IAuxiliaryService? auxiliary = null,
         IConfirmationService? confirmation = null)
     {
         UserFolders = userFolders;
@@ -60,7 +61,7 @@ public sealed partial class MainViewModel : ViewModelBase
         _applications = new ApplicationsViewModel(installationDetector, applicationInstaller, confirmationService);
         _browsers = new BrowsersViewModel(installationDetector, applicationInstaller, confirmationService);
         _portables = new PortablesViewModel(portables ?? new PortableService(), confirmationService);
-        _auxiliary = new AuxiliaryViewModel();
+        _auxiliary = new AuxiliaryViewModel(auxiliary ?? new AuxiliaryService(), confirmationService);
         _scripts = new ScriptsViewModel();
 
         NavigationItems = new ObservableCollection<NavigationItem>
@@ -106,8 +107,8 @@ public sealed partial class MainViewModel : ViewModelBase
             _applications.SetApplications(catalog.Applications, categoryNames);
             _browsers.SetApplications(catalog.Browsers, categoryNames);
             _portables.SetPortables(catalog.Portables, categoryNames);
-            _auxiliary.Load(catalog.Auxiliary.Select(m => ResourceItemViewModel.From(m, categoryNames)));
-            _scripts.Load(catalog.Scripts.Select(ResourceItemViewModel.FromScript));
+            _auxiliary.SetAuxiliary(catalog.Auxiliary, categoryNames);
+            _scripts.SetScripts(catalog.Scripts);
 
             CatalogSummary =
                 $"{catalog.Applications.Count} applications · {catalog.Browsers.Count} browsers · " +

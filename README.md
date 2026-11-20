@@ -68,7 +68,7 @@ Logs are written to `%LOCALAPPDATA%\Skorski Tools\logs\` with daily rolling file
 3. **Applications** — done: registry/MSI/file/path detection, manual install, uninstall with confirmation, reinstall (repair/upgrade), button states and *Detect applications* button. Browsers reuse the same code.
 4. **Browsers** — done: independent catalog entry and navigation item using the same application model and actions. Firefox and Chrome are included; adding another browser only needs a manifest. No browser configuration actions in 1.0.
 5. **Portables** — done: atomic deploy to `%USERPROFILE%\Skorski-Tools\portables\<id>\`, SHA-256 check, desktop shortcut, reinstall and uninstall with a data-loss warning.
-6. Auxiliary and Scripts — pending.
+6. **Auxiliary and Scripts** — done: auxiliary files are copied after SHA-256 verification and never executed; scripts are shown read-only with AvalonEdit syntax highlighting and a clipboard copy button. No execution mechanism exists in either section.
 7. Settings — pending.
 8. Distribution — pending.
 9. Final testing — pending.

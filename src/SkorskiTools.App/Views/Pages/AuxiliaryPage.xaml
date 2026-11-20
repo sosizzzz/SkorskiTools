@@ -5,9 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
-             d:DesignHeight="520" d:DesignWidth="900">
+             d:DesignHeight="560" d:DesignWidth="900">
     <Grid Margin="28,24">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -16,35 +18,31 @@
         <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitleStyle}" />
         <TextBlock Grid.Row="1" Text="{Binding Subtitle}" Style="{StaticResource PageSubtitleStyle}" />
 
-        <Grid Grid.Row="2" Margin="0,20,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <Grid Grid.Row="2" Margin="0,20,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="110" />
+            </Grid.ColumnDefinitions>
+            <ui:TextBox PlaceholderText="Search helper files..." MinWidth="120"
+                        Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+            <ComboBox Grid.Column="1" Margin="8,0,0,0" Width="110"
+                      ItemsSource="{Binding Categories}"
+                      SelectedItem="{Binding SelectedCategory}" />
+        </Grid>
 
-            <Grid Margin="0,0,0,12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="180" />
-                </Grid.ColumnDefinitions>
-                <ui:TextBox PlaceholderText="Search helper files..."
-                            Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-                <ComboBox Grid.Column="1" Margin="10,0,0,0"
-                          ItemsSource="{Binding Categories}"
-                          SelectedItem="{Binding SelectedCategory}" />
-            </Grid>
+        <TextBlock Grid.Row="3" Text="{Binding CopySummary}" Margin="0,0,0,10"
+                   Style="{StaticResource SidebarLabelStyle}" />
 
-            <Grid Grid.Row="1">
-                <ListBox ItemsSource="{Binding ItemsView}"
-                         SelectedItem="{Binding SelectedItem}"
-                         ItemTemplate="{StaticResource ResourceItemTemplate}"
-                         Background="Transparent" BorderThickness="0"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
-                <TextBlock Text="{Binding EmptyMessage}" HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Style="{StaticResource PlaceholderTextStyle}"
-                           Visibility="{Binding HasItems, Converter={StaticResource InverseBoolToVisibility}}" />
-            </Grid>
+        <Grid Grid.Row="4">
+            <ListBox ItemsSource="{Binding ItemsView}"
+                     SelectedItem="{Binding SelectedItem}"
+                     ItemTemplate="{StaticResource AuxiliaryItemTemplate}"
+                     Background="Transparent" BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+            <TextBlock Text="{Binding EmptyMessage}" HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Style="{StaticResource PlaceholderTextStyle}"
+                       Visibility="{Binding HasItems, Converter={StaticResource InverseBoolToVisibility}}" />
         </Grid>
     </Grid>
 </UserControl>
