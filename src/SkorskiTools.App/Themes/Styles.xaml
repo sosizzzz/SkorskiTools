@@ -110,4 +110,50 @@
             </Grid>
         </Border>
     </DataTemplate>
+
+    <!-- Application/browser row with the three installation actions. -->
+    <DataTemplate x:Key="ApplicationItemTemplate" DataType="{x:Type vm:ResourceItemViewModel}">
+        <Border Padding="14,10" Margin="0,0,0,6" CornerRadius="8"
+                Background="#0FFFFFFF" BorderBrush="#14FFFFFF" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0" VerticalAlignment="Center">
+                    <Image Source="{Binding IconPath}" Width="32" Height="32"
+                           Visibility="{Binding HasIcon, Converter={StaticResource BoolToVisibility}}" />
+                    <ui:SymbolIcon Symbol="{Binding Glyph}" FontSize="26"
+                                   Visibility="{Binding HasNoIcon, Converter={StaticResource BoolToVisibility}}" />
+                </Grid>
+
+                <StackPanel Grid.Column="1" Margin="8,0,12,0">
+                    <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    <TextBlock Text="{Binding Description}" FontSize="12"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Text="{Binding StatusText}" FontSize="11" Margin="0,3,0,0"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <ui:Button Content="Install" Margin="0,0,4,0" Padding="8,4" FontSize="12"
+                               Command="{Binding DataContext.InstallCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                               CommandParameter="{Binding}"
+                               Visibility="{Binding IsInstalled, Converter={StaticResource InverseBoolToVisibility}}" />
+                    <ui:Button Content="Uninstall" Margin="0,0,4,0" Padding="8,4" FontSize="12"
+                               IsEnabled="{Binding CanUninstall}"
+                               Command="{Binding DataContext.UninstallCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                               CommandParameter="{Binding}" />
+                    <ui:Button Content="Reinstall" Padding="8,4" FontSize="12"
+                               IsEnabled="{Binding CanReinstall}"
+                               Command="{Binding DataContext.ReinstallCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                               CommandParameter="{Binding}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
 </ResourceDictionary>

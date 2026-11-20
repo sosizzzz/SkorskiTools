@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
 using SkorskiTools.App.Infrastructure;
+using SkorskiTools.App.Services;
 using SkorskiTools.App.ViewModels.Pages;
 using SkorskiTools.Core.Infrastructure;
 using SkorskiTools.Core.Services;
@@ -40,14 +41,23 @@ public sealed partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private ViewModelBase _currentPage;
 
-    public MainViewModel(UserFoldersResult userFolders, IResourceCatalogService? catalogService = null)
+    public MainViewModel(
+        UserFoldersResult userFolders,
+        IResourceCatalogService? catalogService = null,
+        IInstallationDetector? detector = null,
+        IApplicationInstaller? installer = null,
+        IConfirmationService? confirmation = null)
     {
         UserFolders = userFolders;
         _catalogService = catalogService ?? new ResourceCatalogService();
 
+        var installationDetector = detector ?? new InstallationDetector();
+        var applicationInstaller = installer ?? new ApplicationInstaller();
+        var confirmationService = confirmation ?? new ConfirmationService();
+
         _dashboard = new DashboardViewModel();
-        _applications = new ApplicationsViewModel();
-        _browsers = new BrowsersViewModel();
+        _applications = new ApplicationsViewModel(installationDetector, applicationInstaller, confirmationService);
+        _browsers = new BrowsersViewModel(installationDetector, applicationInstaller, confirmationService);
         _portables = new PortablesViewModel();
         _auxiliary = new AuxiliaryViewModel();
         _scripts = new ScriptsViewModel();
@@ -92,8 +102,8 @@ public sealed partial class MainViewModel : ViewModelBase
             var categoryNames = catalog.Categories.ToDictionary(
                 c => c.Id, c => c.Name, StringComparer.OrdinalIgnoreCase);
 
-            _applications.Load(catalog.Applications.Select(m => ResourceItemViewModel.From(m, categoryNames)));
-            _browsers.Load(catalog.Browsers.Select(m => ResourceItemViewModel.From(m, categoryNames)));
+            _applications.SetApplications(catalog.Applications, categoryNames);
+            _browsers.SetApplications(catalog.Browsers, categoryNames);
             _portables.Load(catalog.Portables.Select(m => ResourceItemViewModel.From(m, categoryNames)));
             _auxiliary.Load(catalog.Auxiliary.Select(m => ResourceItemViewModel.From(m, categoryNames)));
             _scripts.Load(catalog.Scripts.Select(ResourceItemViewModel.FromScript));
@@ -121,6 +131,13 @@ public sealed partial class MainViewModel : ViewModelBase
         }
     }
 
+    /// <summary>Loads the catalog and runs the initial installation detection.</summary>
+    public async Task LoadCatalogAndDetectAsync()
+    {
+        await LoadCatalogAsync();
+        await Task.WhenAll(_applications.DetectAllAsync(), _browsers.DetectAllAsync());
+    }
+
     [RelayCommand]
-    private async Task RefreshCatalogAsync() => await LoadCatalogAsync();
+    private async Task RefreshCatalogAsync() => await LoadCatalogAndDetectAsync();
 }

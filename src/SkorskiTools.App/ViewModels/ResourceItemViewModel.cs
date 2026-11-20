@@ -1,12 +1,17 @@
 using System.IO;
+using CommunityToolkit.Mvvm.ComponentModel;
 using SkorskiTools.Core.Models;
 using Wpf.Ui.Controls;
 
 namespace SkorskiTools.App.ViewModels;
 
 /// <summary>A catalog entry prepared for display in a section list.</summary>
-public sealed class ResourceItemViewModel
+public sealed class ResourceItemViewModel : ObservableObject
 {
+    private bool _isInstalled;
+    private string? _installedVersion;
+    private string _detectionSource = string.Empty;
+
     private ResourceItemViewModel()
     {
     }
@@ -26,6 +31,47 @@ public sealed class ResourceItemViewModel
 
     public bool HasIcon => !string.IsNullOrWhiteSpace(IconPath);
     public bool HasNoIcon => !HasIcon;
+
+    public bool IsInstalled
+    {
+        get => _isInstalled;
+        set
+        {
+            if (SetProperty(ref _isInstalled, value))
+            {
+                OnPropertyChanged(nameof(CanInstall));
+                OnPropertyChanged(nameof(CanUninstall));
+                OnPropertyChanged(nameof(CanReinstall));
+                OnPropertyChanged(nameof(StatusText));
+            }
+        }
+    }
+
+    public string? InstalledVersion
+    {
+        get => _installedVersion;
+        set
+        {
+            if (SetProperty(ref _installedVersion, value))
+                OnPropertyChanged(nameof(StatusText));
+        }
+    }
+
+    public string DetectionSource
+    {
+        get => _detectionSource;
+        set => SetProperty(ref _detectionSource, value);
+    }
+
+    public bool CanInstall => !IsInstalled;
+    public bool CanUninstall => IsInstalled;
+    public bool CanReinstall => IsInstalled;
+
+    public string StatusText => IsInstalled
+        ? string.IsNullOrWhiteSpace(InstalledVersion)
+            ? "Installed"
+            : $"Installed {InstalledVersion}"
+        : "Not installed";
 
     public static ResourceItemViewModel From(
         ManifestBase manifest,

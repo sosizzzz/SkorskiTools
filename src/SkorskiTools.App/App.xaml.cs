@@ -42,7 +42,7 @@ public partial class App : Application
             "Main window shown on {Page} with {Count} navigation items",
             mainViewModel.CurrentPage.Title, mainViewModel.NavigationItems.Count);
 
-        _ = mainViewModel.LoadCatalogAsync();
+        _ = mainViewModel.LoadCatalogAndDetectAsync();
     }
 
     protected override void OnExit(ExitEventArgs e)

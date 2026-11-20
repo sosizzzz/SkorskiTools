@@ -65,7 +65,7 @@ Logs are written to `%LOCALAPPDATA%\Skorski Tools\logs\` with daily rolling file
 
 1. **Foundation** — in progress: solution, .NET 10 + WPF, MVVM, navigation, dark theme, user folders, logging.
 2. **Dynamic catalog** — done: JSON Schemas, manifest validation, SHA-256, path safety, discovery, categories, icons, search and category filters.
-3. Applications — pending.
+3. **Applications** — done: registry/MSI/file/path detection, manual install, uninstall with confirmation, reinstall (repair/upgrade), button states and *Detect applications* button. Browsers reuse the same code.
 4. Browsers — pending.
 5. Portables — pending.
 6. Auxiliary and Scripts — pending.

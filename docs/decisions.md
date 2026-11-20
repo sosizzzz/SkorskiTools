@@ -83,3 +83,24 @@ it throws at runtime. A `ui:TitleBar` was added to the window.
 multi-monitor setup, and a 1200x760 window exceeded the primary work area at 125%
 DPI scaling. The window is now explicitly centered on the primary monitor and sized
 to 1100x640.
+
+## Phase 3 — Applications
+
+### Target framework
+Core and Tests now target `net10.0-windows` instead of `net10.0`. The project only
+supports Windows, and the registry APIs produced CA1416 warnings on the portable TFM.
+
+### Detection
+Detection reads all three uninstall locations (HKLM, HKLM WOW6432Node and HKCU)
+through `IUninstallEntryProvider`, so unit tests use a fake provider instead of the
+real registry. `file-exists` and `path` strategies expand `%VARIABLES%`. The detected
+version comes from `DisplayVersion` or from the file version.
+
+### Reinstall
+Reinstall runs the original installer in repair/upgrade mode. It never uninstalls
+the application first, so no destructive step is performed without confirmation.
+
+### Uninstall safety
+Uninstall commands come only from the registry entry matched during detection.
+They are split into executable plus an argument list and never concatenated.
+Program folders are never deleted by Skorski Tools.
