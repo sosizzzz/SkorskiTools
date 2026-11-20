@@ -145,3 +145,12 @@ clipboard; scripts are never executed.
 
 `AvalonEdit` was added to the dependency list because the specification requires
 syntax highlighting in the Scripts view.
+
+## Phase 7 — Settings
+
+Settings is informational in 1.0: version, resources path, user files path, logs path
+and the current installation mode (Manual). Visual preferences are not shown because
+none are implemented yet.
+
+The *Full Auto* option is visible but permanently disabled and labelled "Coming soon".
+It has no command, no handler and no partial implementation behind it.

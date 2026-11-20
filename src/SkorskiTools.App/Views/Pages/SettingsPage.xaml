@@ -3,14 +3,90 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="900">
-    <StackPanel Margin="30,26">
-        <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitleStyle}" />
-        <TextBlock Text="{Binding Subtitle}" Style="{StaticResource PageSubtitleStyle}" />
-        <Border Style="{StaticResource InfoPanelStyle}" Margin="0,26,0,0">
-            <TextBlock Style="{StaticResource PlaceholderTextStyle}"
-                       Text="Version information, paths and preferences are implemented in Phase 7." />
-        </Border>
-    </StackPanel>
+             d:DesignHeight="560" d:DesignWidth="900">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="28,24">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitleStyle}" />
+            <TextBlock Text="{Binding Subtitle}" Style="{StaticResource PageSubtitleStyle}" />
+
+            <Border Style="{StaticResource InfoPanelStyle}" Margin="0,26,0,0">
+                <StackPanel>
+                    <TextBlock Text="General" FontSize="16" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Installed version" Style="{StaticResource SidebarLabelStyle}" />
+                        <TextBlock Grid.Column="1" Text="{Binding VersionText}" FontSize="13"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                        <TextBlock Grid.Row="1" Text="Resources location" Style="{StaticResource SidebarLabelStyle}" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ResourcesPath}" FontSize="13"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                        <TextBlock Grid.Row="2" Text="User files location" Style="{StaticResource SidebarLabelStyle}" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding UserFilesPath}" FontSize="13"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                        <TextBlock Grid.Row="3" Text="Logs location" Style="{StaticResource SidebarLabelStyle}" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding LogsPath}" FontSize="13"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource InfoPanelStyle}" Margin="0,14,0,0">
+                <StackPanel>
+                    <TextBlock Text="Installations" FontSize="16" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    <TextBlock Text="Current mode" Margin="0,14,0,0"
+                               Style="{StaticResource SidebarLabelStyle}" />
+                    <TextBlock Text="{Binding InstallationMode}" FontSize="13" Margin="0,2,0,0"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    <TextBlock Text="{Binding InstallationModeDescription}" FontSize="12" Margin="0,6,0,0"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource InfoPanelStyle}" Margin="0,14,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Full Auto" FontSize="16" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        <TextBlock Text="{Binding FullAutoDescription}" FontSize="12" Margin="0,6,0,0"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
+                                Margin="16,0,0,0">
+                        <Border Background="#1AFFFFFF" CornerRadius="4" Padding="8,4" Margin="0,0,10,0">
+                            <TextBlock Text="{Binding FullAutoStatus}" FontSize="11"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        </Border>
+                        <ui:ToggleSwitch IsChecked="{Binding FullAutoEnabled, Mode=OneWay}" IsEnabled="False" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
