@@ -104,3 +104,15 @@ the application first, so no destructive step is performed without confirmation.
 Uninstall commands come only from the registry entry matched during detection.
 They are split into executable plus an argument list and never concatenated.
 Program folders are never deleted by Skorski Tools.
+
+## Phase 4 — Browsers
+
+Browsers are a separate catalog directory and navigation item, but they use the
+same `ApplicationManifest` model and `ApplicationListViewModel` as Applications.
+No detection, install, uninstall or reinstall logic was duplicated.
+
+Firefox and Chrome are the initial entries. Any other browser can be added by
+dropping a manifest into `resources/browsers/<id>/` with its installer.
+
+"Skorski's Config" is explicitly out of scope for 1.0: there is no button,
+placeholder or partial implementation for it.

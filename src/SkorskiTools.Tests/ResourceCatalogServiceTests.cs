@@ -63,6 +63,20 @@ public sealed class ResourceCatalogServiceTests
     }
 
     [Fact]
+    public async Task LoadAsync_BrowsersUseTheApplicationModel()
+    {
+        var result = await new ResourceCatalogService().LoadAsync(TestData.ResourcesDirectory);
+
+        Assert.Contains(result.Browsers, b => b.Id == "firefox");
+        Assert.All(result.Browsers, browser => Assert.IsType<ApplicationManifest>(browser));
+        Assert.All(result.Browsers, browser =>
+        {
+            Assert.NotNull(browser.Detection);
+            Assert.NotEmpty(browser.Files);
+        });
+    }
+
+    [Fact]
     public async Task LoadAsync_MissingDirectory_ReturnsErrorIssue()
     {
         var missing = Path.Combine(Path.GetTempPath(), "skorski-missing-" + Guid.NewGuid().ToString("N"));
