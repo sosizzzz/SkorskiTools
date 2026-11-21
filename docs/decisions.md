@@ -259,6 +259,11 @@ in `inst/`. Only VLC and Git were added to the catalog, by owner decision: the M
 358 MB and cannot be committed to GitHub. `inst/` is now git-ignored so staging files
 are never included in a commit by accident.
 
+**Policy:** `inst/` is only a staging area. After an installer is copied into
+`resources/<section>/<id>/` and its manifest is verified, the staged file is deleted.
+If a candidate is discarded, its staged file is deleted as well. The folder stays
+empty between deliveries. This avoids keeping duplicate copies of large installers.
+
 - VLC: registry detection `VLC media player` (startsWith), silent `/L=1033 /S`, machine scope.
 - Git: registry detection `Git` (exact — verified against the installed entry),
   silent `/VERYSILENT /NORESTART /SP-`, machine scope.
