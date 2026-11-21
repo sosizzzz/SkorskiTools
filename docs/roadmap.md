@@ -1,7 +1,8 @@
 # Roadmap — next cycle: Skorski's Config (Firefox)
 
 This document proposes the first post-1.0 feature. It is a plan only: no code is
-changed until the owner confirms the open decisions at the end.
+changed until the owner provides the `user.js` file. The decisions below are already
+confirmed by the owner.
 
 ## Goal
 
@@ -158,23 +159,52 @@ extension or preference list in C# or XAML.
   profile.
 - New Release (1.1.0) only after the owner approves the result.
 
-## Risks and decisions to confirm
+## Confirmed decisions
 
-1. **Which profiles?** Recommended: show all profiles from `profiles.ini`, preselect
-   `*.default-release`, let the owner choose; never apply to all silently.
-2. **Existing `user.js` content:** recommended to preserve the user's lines and only
-   manage a delimited block.
-3. **Other installed extensions:** recommended to leave them untouched.
-4. **Extension updates:** set `applyBackgroundUpdates: 0`; Skorski Tools must not
-   download a different version.
-5. **Unsigned add-ons:** skip with a clear message; do not modify signature prefs.
-6. **`newtab@mozilla.org.xpi`:** exclude from the first cycle unless the owner
-   explicitly wants it.
+1. **Preferences file:** the owner will provide a clean `user.js`. Skorski Tools will
+   not derive it from the existing `prefs.js`.
+2. **Extensions:** only **uBlock Origin** (`uBlock0@raymondhill.net.xpi`) in the first
+   cycle.
+3. **Theme:** dark mode is mandatory, with the **Flame** colour theme
+   (`nova-flame@mozilla.org.xpi`).
+4. **Search:** `search.json.mozlz4` is included, and **Google must be the only search
+   engine enabled**.
+5. **New tab / startup:** opening Firefox or a new tab must show a blank page.
+6. **Profiles:** all profiles are discovered from `profiles.ini`; the UI preselects
+   `*.default-release` and requires explicit confirmation. Never apply to all
+   silently.
+7. **`newtab@mozilla.org.xpi`:** excluded; it is a Firefox system add-on and is
+   fragile to replace.
+8. **Existing `user.js` content:** preserve the user's own lines and only manage a
+   delimited Skorski block.
+9. **Other installed extensions:** leave them untouched.
+10. **Extension updates:** `applyBackgroundUpdates: 0`; Skorski Tools never downloads
+    a different version.
+11. **Unsigned add-ons:** skip with a clear message; do not touch signature prefs.
 
-## Open questions for the owner
+## Preference checklist for the owner-provided `user.js`
 
-- Please provide the clean `user.js` (or confirm option 2 above).
-- Confirm which of the existing `.xpi` files should be enabled, and whether to add
-  more.
-- Confirm whether `search.json.mozlz4` should be applied.
-- Confirm the profile policy (per-profile choice vs. default profile only).
+The provided file should contain, at minimum, the preferences that enforce the
+confirmed behaviour. Skorski Tools will validate their presence at load time and
+report a clear catalog issue if any are missing:
+
+| Requirement | Indicative preference(s) |
+|---|---|
+| Dark mode | `ui.systemUsesDarkTheme` / active dark theme pref (to be confirmed empirically) |
+| Flame colour theme | `extensions.activeThemeID` = `nova-flame@mozilla.org` |
+| Only Google search | `browser.search.defaultenginename` = `Google` and hide/disable the other engines |
+| Blank startup | `browser.startup.page` = `0`, `browser.startup.homepage` = `about:blank` |
+| Blank new tab | `browser.newtabpage.enabled` = `false` |
+
+> Firefox themes are exclusive: activating Flame replaces the built-in dark theme.
+> Flame ships a `dark_theme` variant, so the final combination must be verified on a
+> **copy** of a profile. The exact pref names will be confirmed during Step 2 and
+> recorded in `docs/decisions.md`.
+
+## Still needed from the owner
+
+- The clean `user.js` file, saved as
+  `resources/browsers/firefox/config/user.js` (or tell me its path so I can copy it).
+- Confirm that the provided `search.json.mozlz4` contains **only Google**; it will be
+  decompressed and checked during implementation.
+- If any additional prefs beyond the checklist matter, include them in `user.js`.
