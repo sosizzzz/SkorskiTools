@@ -5,8 +5,12 @@ namespace SkorskiTools.App.ViewModels.Pages;
 
 public sealed class PortablesViewModel : PortableListViewModel
 {
-    public PortablesViewModel(IPortableService portables, IConfirmationService confirmation)
-        : base(portables, confirmation)
+    public PortablesViewModel(
+        IPortableService portables,
+        IConfirmationService confirmation,
+        IFullInstallRunner fullInstall,
+        ISettingsService settings)
+        : base(portables, confirmation, fullInstall, settings)
     {
     }
 

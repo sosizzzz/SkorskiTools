@@ -1,0 +1,249 @@
+using SkorskiTools.Core.Infrastructure;
+using SkorskiTools.Core.Models;
+using SkorskiTools.Core.Services;
+
+namespace SkorskiTools.Tests;
+
+public sealed class FullAutoTests
+{
+    [Fact]
+    public void ManifestReader_ValidFullAuto_IsParsedWithDefaults()
+    {
+        var root = TestData.CreateTempResources();
+        var hash = TestData.CreateResource(root, "installers/test-app", "setup.exe");
+        TestData.WriteManifest(root, "installers/test-app", AppJson(hash, """
+            ,"fullAuto": { "enabled": true, "installArguments": ["/S"] }
+            """));
+
+        var reader = new ManifestReader(TestData.SchemasDirectory, new[] { "utilities" });
+        var result = reader.Read(Path.Combine(root, "installers", "test-app", "manifest.json"),
+            ManifestKind.Application);
+
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+        var manifest = Assert.IsType<ApplicationManifest>(result.Manifest);
+        Assert.True(manifest.FullAuto!.Enabled);
+        Assert.Equal(new[] { "/S" }, manifest.FullAuto.InstallArguments);
+        Assert.Equal(new[] { 0 }, manifest.FullAuto.ExpectedExitCodes);
+        Assert.Equal(new[] { 3010, 1641 }, manifest.FullAuto.RestartExitCodes);
+        Assert.True(manifest.FullAuto.Uninstall.UseQuietUninstallString);
+    }
+
+    [Fact]
+    public void ManifestReader_EnabledWithoutSilentArguments_IsRejected()
+    {
+        var root = TestData.CreateTempResources();
+        var hash = TestData.CreateResource(root, "installers/test-app", "setup.exe");
+        TestData.WriteManifest(root, "installers/test-app", AppJson(hash, """
+            ,"fullAuto": { "enabled": true }
+            """));
+
+        var reader = new ManifestReader(TestData.SchemasDirectory, new[] { "utilities" });
+        var result = reader.Read(Path.Combine(root, "installers", "test-app", "manifest.json"),
+            ManifestKind.Application);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("silent switches", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task BuildPlan_UsesDetectionAndSkipsIneligibleApps()
+    {
+        var eligible = Manifest("eligible", true);
+        var installed = Manifest("installed", true);
+        var ineligible = Manifest("ineligible", false);
+        var detector = new FakeDetector(installed.Id);
+        var service = new FullAutoService(detector, new FakeInstaller());
+
+        var plan = await service.BuildPlanAsync(new[] { eligible, installed, ineligible });
+
+        Assert.Equal(2, plan.Count);
+        Assert.Equal(FullAutoAction.Install, plan.Items[0].Action);
+        Assert.Equal(FullAutoAction.Reinstall, plan.Items[1].Action);
+        Assert.Single(plan.Skipped);
+    }
+
+    [Fact]
+    public async Task Execute_ClassifiesExitCodes()
+    {
+        var app = Manifest("app", true);
+        var plan = new FullAutoPlan
+        {
+            Items = new[]
+            {
+                new FullAutoPlanItem
+                {
+                    Manifest = app,
+                    Detection = DetectionResult.NotInstalled,
+                    Action = FullAutoAction.Install
+                }
+            }
+        };
+        var installer = new FakeInstaller { InstallResult = OperationResult.Ok("done", 3010) };
+        var service = new FullAutoService(new FakeDetector(), installer);
+
+        var result = await service.ExecuteAsync(plan);
+
+        Assert.Equal(0, result.Succeeded);
+        Assert.Equal(1, result.RequiringRestart);
+        Assert.Equal(0, result.Failed);
+    }
+
+    [Fact]
+    public async Task Execute_FailedQuietUninstall_SkipsInstallation()
+    {
+        var app = Manifest("app", true);
+        var plan = new FullAutoPlan
+        {
+            Items = new[]
+            {
+                new FullAutoPlanItem
+                {
+                    Manifest = app,
+                    Detection = DetectionResult.Installed("1.0", "Registry"),
+                    Action = FullAutoAction.Reinstall
+                }
+            }
+        };
+        var installer = new FakeInstaller
+        {
+            QuietUninstallResult = OperationResult.Fail("registry entry missing")
+        };
+        var service = new FullAutoService(new FakeDetector(), installer);
+
+        var result = await service.ExecuteAsync(plan);
+
+        Assert.Equal(1, result.Failed);
+        Assert.Equal(0, installer.InstallCalls);
+        Assert.Contains(result.Messages, m => m.Contains("uninstall failed", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task BuildPlan_IncludesSelectedPortables()
+    {
+        var portable = new PortableManifest
+        {
+            Id = "portable-app",
+            Name = "Portable App",
+            Package = new ManifestFile { File = "tool.exe", Sha256 = new string('0', 64) },
+            Executable = "tool.exe"
+        };
+        var portables = new FakePortableService { Installed = true };
+        var service = new FullAutoService(new FakeDetector(), new FakeInstaller(), portables);
+
+        var plan = await service.BuildPlanAsync(new[] { portable });
+
+        Assert.Single(plan.Items);
+        Assert.Equal(FullAutoAction.Reinstall, plan.Items[0].Action);
+    }
+
+    [Fact]
+    public void SettingsService_PersistsFullAutoFlag()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "skorski-settings-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var service = new SettingsService(root);
+            Assert.False(service.Current.FullAutoEnabled);
+
+            var changes = 0;
+            service.SettingsChanged += (_, _) => changes++;
+            service.SetFullAutoEnabled(true);
+
+            Assert.True(service.Current.FullAutoEnabled);
+            Assert.Equal(1, changes);
+            Assert.True(new SettingsService(root).Current.FullAutoEnabled);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+                Directory.Delete(root, recursive: true);
+        }
+    }
+
+    private static ApplicationManifest Manifest(string id, bool enabled) => new()
+    {
+        SchemaVersion = 1,
+        Id = id,
+        Name = id,
+        FullAuto = new FullAutoConfig
+        {
+            Enabled = enabled,
+            InstallArguments = enabled ? new[] { "/S" } : Array.Empty<string>()
+        }
+    };
+
+    private static string AppJson(string sha, string extra) => $$"""
+        {
+          "schemaVersion": 1,
+          "id": "test-app",
+          "name": "Test App",
+          "category": "utilities",
+          "files": [ { "file": "setup.exe", "sha256": "{{sha}}" } ],
+          "detection": { "type": "registry", "displayName": "Test App" }
+          {{extra}}
+        }
+        """;
+
+    private sealed class FakeDetector : IInstallationDetector
+    {
+        private readonly string _installedId;
+
+        public FakeDetector(string installedId = "") => _installedId = installedId;
+
+        public Task<DetectionResult> DetectAsync(
+            ApplicationManifest manifest,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(manifest.Id == _installedId
+                ? DetectionResult.Installed("1.0", "Registry")
+                : DetectionResult.NotInstalled);
+    }
+
+    private sealed class FakePortableService : IPortableService
+    {
+        public bool Installed { get; set; }
+
+        public bool IsInstalled(PortableManifest manifest) => Installed;
+
+        public Task<OperationResult> InstallAsync(
+            PortableManifest manifest, CancellationToken cancellationToken = default) =>
+            Task.FromResult(OperationResult.Ok("deployed"));
+
+        public Task<OperationResult> ReinstallAsync(
+            PortableManifest manifest, CancellationToken cancellationToken = default) =>
+            Task.FromResult(OperationResult.Ok("replaced"));
+
+        public Task<OperationResult> UninstallAsync(
+            PortableManifest manifest, CancellationToken cancellationToken = default) =>
+            Task.FromResult(OperationResult.Ok("removed"));
+    }
+
+    private sealed class FakeInstaller : IApplicationInstaller
+    {
+        public OperationResult InstallResult { get; set; } = OperationResult.Ok("done", 0);
+        public OperationResult QuietUninstallResult { get; set; } = OperationResult.Ok("removed", 0);
+        public int InstallCalls { get; private set; }
+
+        public Task<OperationResult> InstallAsync(
+            ApplicationManifest manifest, CancellationToken cancellationToken = default) =>
+            Task.FromResult(InstallResult);
+
+        public Task<OperationResult> UninstallAsync(
+            ApplicationManifest manifest,
+            DetectionResult detection,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(OperationResult.Ok("removed"));
+
+        public Task<OperationResult> InstallAutomatedAsync(
+            ApplicationManifest manifest, CancellationToken cancellationToken = default)
+        {
+            InstallCalls++;
+            return Task.FromResult(InstallResult);
+        }
+
+        public Task<OperationResult> UninstallQuietAsync(
+            ApplicationManifest manifest,
+            DetectionResult detection,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(QuietUninstallResult);
+    }
+}

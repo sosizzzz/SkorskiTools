@@ -45,21 +45,26 @@ Rules:
 
 `FullAutoService` (Core, injectable and unit-tested):
 
-1. `BuildPlanAsync` reuses `IInstallationDetector` for every item.
-2. Not-installed + eligible → **Install**. Installed + eligible → **Reinstall**.
-   Ineligible items are skipped with a reason in the plan.
-3. `ExecuteAsync` verifies SHA-256 again, runs the original installer with the
-   configured argument list, waits for it, checks exit codes, re-runs detection and
-   reports progress.
+1. `BuildPlanAsync` receives only the **selected** manifests. Applications and
+   browsers reuse `IInstallationDetector`; portables use `IPortableService.IsInstalled`.
+2. Not-installed → **Install**. Installed → **Reinstall**. Ineligible applications
+   are skipped with a reason.
+3. `ExecuteAsync` runs the items **sequentially**, one at a time. It verifies SHA-256
+   again, runs the original installer/portable deployment, waits for it, checks exit
+   codes for applications, re-detects and reports progress as `current/total`.
 4. Only `expectedExitCodes` count as success; `restartExitCodes` are reported as
    "needs restart", not as silent failures.
 
 ### UI and settings
 
-- The *Full Auto* switch in Settings becomes usable and persists to
-  `%USERPROFILE%\Skorski-Tools\settings.json`. It is off by default.
-- Applications and Browsers get a **Full Auto** button, visible only while the switch
-  is on. It shows a confirmation listing every planned action before running.
+- The *Full Auto* switch in Settings only enables the selection UI. It persists to
+  `%USERPROFILE%\Skorski-Tools\settings.json` and is off by default.
+- While enabled, Applications, Browsers and Portables show a **checkbox on every row**.
+- Each of those sections shows a coloured **Full install** button next to *Detect*.
+  It installs the selected resources one by one, never in parallel.
+- A progress bar and a `1/3` counter are shown during the batch.
+- When the batch finishes, a large green/red message appears in the page and a Windows
+  notification sound plays: the user can select, start and then forget about it.
 - Manual Install/Uninstall/Reinstall buttons remain unchanged.
 
 ### Acceptance criteria
@@ -68,7 +73,9 @@ Rules:
 - No full-auto capability for a manifest without verified silent arguments.
 - No destructive action without an explicit, named confirmation.
 - All process arguments are passed as lists, never concatenated.
-- Core logic is covered by unit tests with fake detector/installer.
+- Installations run one at a time, with a visible `current/total` counter.
+- A visible result message and a sound are produced when the batch ends.
+- Core logic is covered by unit tests with fake detector/installer/portable service.
 
 ### Known limitation
 

@@ -12,6 +12,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -23,6 +24,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="110" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ui:TextBox PlaceholderText="Search applications..." MinWidth="120"
                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
@@ -32,6 +34,10 @@
             <ui:Button Grid.Column="2" Margin="8,0,0,0" Content="Detect"
                        Padding="10,4" FontSize="12"
                        Command="{Binding DetectCommand}" />
+            <ui:Button Grid.Column="3" Margin="8,0,0,0" Content="Full install"
+                       Appearance="Primary" Padding="10,4" FontSize="12"
+                       Command="{Binding RunFullInstallCommand}"
+                       Visibility="{Binding IsFullAutoEnabled, Converter={StaticResource BoolToVisibility}}" />
         </Grid>
 
         <StackPanel Grid.Row="3" Margin="0,0,0,10" Orientation="Horizontal">
@@ -39,9 +45,34 @@
                          Visibility="{Binding IsDetecting, Converter={StaticResource BoolToVisibility}}" />
             <TextBlock Text="{Binding DetectionSummary}" Margin="10,0,0,0" VerticalAlignment="Center"
                        Style="{StaticResource SidebarLabelStyle}" />
+            <ProgressBar Width="100" Height="4" Margin="10,0,0,0" VerticalAlignment="Center"
+                         Value="{Binding FullAutoProgress}" Maximum="{Binding FullAutoTotal}"
+                         Visibility="{Binding IsFullAutoRunning, Converter={StaticResource BoolToVisibility}}" />
+            <TextBlock Text="{Binding FullAutoProgressText}" Margin="8,0,0,0" VerticalAlignment="Center"
+                       FontWeight="SemiBold"
+                       Visibility="{Binding IsFullAutoRunning, Converter={StaticResource BoolToVisibility}}" />
         </StackPanel>
 
-        <Grid Grid.Row="4">
+        <Border Grid.Row="4" Margin="0,0,0,12" Padding="14,10" CornerRadius="8"
+                BorderThickness="1"
+                Visibility="{Binding HasFullAutoResult, Converter={StaticResource BoolToVisibility}}">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="#1A2E7D32" />
+                    <Setter Property="BorderBrush" Value="#4CAF50" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding FullAutoResultOk}" Value="False">
+                            <Setter Property="Background" Value="#1AB71C1C" />
+                            <Setter Property="BorderBrush" Value="#F44336" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock Text="{Binding FullAutoResultMessage}" FontSize="14" FontWeight="SemiBold"
+                       Foreground="#C8E6C9" TextWrapping="Wrap" />
+        </Border>
+
+        <Grid Grid.Row="5">
             <ListBox ItemsSource="{Binding ItemsView}"
                      SelectedItem="{Binding SelectedItem}"
                      ItemTemplate="{StaticResource ApplicationItemTemplate}"

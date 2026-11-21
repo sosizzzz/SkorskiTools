@@ -182,3 +182,23 @@ executable's icon.
 silently created no shortcut at all. This was found and fixed after a real
 end-to-end deployment check; a unit test now verifies that the `.lnk` file exists
 and carries the requested icon.
+
+## Full install (post-1.0)
+
+The naming is **Full install**, not "Full Auto", because the owner wants an explicit
+batch the user selects and starts. The Settings switch only reveals selection
+checkboxes and a coloured *Full install* button; it never installs anything itself.
+
+`FullAutoService` is a sequential engine: it accepts only the selected manifests,
+builds a plan (Install/Reinstall) and executes them one at a time. Applications use
+`installArguments` from the `fullAuto` manifest block; portables use the existing
+deployment service. No vendor switch is guessed, and nothing is downloaded.
+
+`FullInstallRunner` owns the confirmation, the completion sound and the result text,
+so Applications, Browsers and Portables behave identically without duplicated code.
+The UI shows a `current/total` counter during the batch and a prominent green/red
+message plus a Windows notification sound when it finishes.
+
+Silent switches are still owned by the manifest. Until the owner adds verified
+`fullAuto` blocks, applications are skipped with a clear reason and only portables
+are eligible.

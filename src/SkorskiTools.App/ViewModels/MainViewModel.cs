@@ -48,7 +48,8 @@ public sealed partial class MainViewModel : ViewModelBase
         IApplicationInstaller? installer = null,
         IPortableService? portables = null,
         IAuxiliaryService? auxiliary = null,
-        IConfirmationService? confirmation = null)
+        IConfirmationService? confirmation = null,
+        ISettingsService? settings = null)
     {
         UserFolders = userFolders;
         _catalogService = catalogService ?? new ResourceCatalogService();
@@ -56,11 +57,19 @@ public sealed partial class MainViewModel : ViewModelBase
         var installationDetector = detector ?? new InstallationDetector();
         var applicationInstaller = installer ?? new ApplicationInstaller();
         var confirmationService = confirmation ?? new ConfirmationService();
+        var settingsService = settings ?? new SettingsService();
+        var portableService = portables ?? new PortableService();
+        var fullAutoService = new FullAutoService(installationDetector, applicationInstaller, portableService);
+        var fullInstallRunner = new FullInstallRunner(
+            fullAutoService, confirmationService, new CompletionSoundService());
 
         _dashboard = new DashboardViewModel();
-        _applications = new ApplicationsViewModel(installationDetector, applicationInstaller, confirmationService);
-        _browsers = new BrowsersViewModel(installationDetector, applicationInstaller, confirmationService);
-        _portables = new PortablesViewModel(portables ?? new PortableService(), confirmationService);
+        _applications = new ApplicationsViewModel(
+            installationDetector, applicationInstaller, confirmationService, fullInstallRunner, settingsService);
+        _browsers = new BrowsersViewModel(
+            installationDetector, applicationInstaller, confirmationService, fullInstallRunner, settingsService);
+        _portables = new PortablesViewModel(
+            portableService, confirmationService, fullInstallRunner, settingsService);
         _auxiliary = new AuxiliaryViewModel(auxiliary ?? new AuxiliaryService(), confirmationService);
         _scripts = new ScriptsViewModel();
 
@@ -72,7 +81,7 @@ public sealed partial class MainViewModel : ViewModelBase
             new("Portables", SymbolRegular.Toolbox24, _portables),
             new("Auxiliary", SymbolRegular.Folder24, _auxiliary),
             new("Scripts", SymbolRegular.Script24, _scripts),
-            new("Settings", SymbolRegular.Settings24, new SettingsViewModel()),
+            new("Settings", SymbolRegular.Settings24, new SettingsViewModel(settingsService)),
         };
 
         _selectedItem = NavigationItems[0];

@@ -14,6 +14,7 @@ internal sealed class ManifestDto
     public DetectionDto? Detection { get; set; }
     public InstallationDto? Installation { get; set; }
     public UninstallationDto? Uninstallation { get; set; }
+    public FullAutoDto? FullAuto { get; set; }
     public ManifestFileDto? Package { get; set; }
     public string Executable { get; set; } = string.Empty;
     public string ShortcutName { get; set; } = string.Empty;
@@ -45,6 +46,21 @@ internal sealed class UninstallationDto
 {
     public string Mode { get; set; } = string.Empty;
     public string ProductCode { get; set; } = string.Empty;
+}
+
+internal sealed class FullAutoDto
+{
+    public bool Enabled { get; set; }
+    public List<string>? InstallArguments { get; set; }
+    public List<int>? ExpectedExitCodes { get; set; }
+    public List<int>? RestartExitCodes { get; set; }
+    public FullAutoUninstallDto? Uninstall { get; set; }
+}
+
+internal sealed class FullAutoUninstallDto
+{
+    public bool UseQuietUninstallString { get; set; } = true;
+    public List<string>? Arguments { get; set; }
 }
 
 internal sealed class ScriptsFileDto

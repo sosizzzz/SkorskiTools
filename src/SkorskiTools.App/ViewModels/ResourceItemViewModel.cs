@@ -12,6 +12,7 @@ public sealed class ResourceItemViewModel : ObservableObject
     private string? _installedVersion;
     private string _detectionSource = string.Empty;
     private string? _customStatus;
+    private bool _isSelected;
 
     private ResourceItemViewModel()
     {
@@ -29,6 +30,12 @@ public sealed class ResourceItemViewModel : ObservableObject
     public string Code { get; private init; } = string.Empty;
     public string Language { get; private init; } = string.Empty;
     public object? Manifest { get; private init; }
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetProperty(ref _isSelected, value);
+    }
 
     public bool HasIcon => !string.IsNullOrWhiteSpace(IconPath);
     public bool HasNoIcon => !HasIcon;

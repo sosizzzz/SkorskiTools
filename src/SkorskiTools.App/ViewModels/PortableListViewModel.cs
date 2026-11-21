@@ -12,19 +12,60 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
 {
     private readonly IPortableService _portables;
     private readonly IConfirmationService _confirmation;
+    private readonly IFullInstallRunner _fullInstall;
+    private readonly ISettingsService _settings;
     private bool _busy;
 
     [ObservableProperty]
     private bool _isDetecting;
 
     [ObservableProperty]
+    private bool _isFullAutoEnabled;
+
+    [ObservableProperty]
+    private bool _isFullAutoRunning;
+
+    [ObservableProperty]
+    private int _fullAutoProgress;
+
+    [ObservableProperty]
+    private int _fullAutoTotal;
+
+    [ObservableProperty]
+    private string _fullAutoProgressText = "0/0";
+
+    [ObservableProperty]
+    private string _fullAutoResultMessage = string.Empty;
+
+    [ObservableProperty]
+    private bool _hasFullAutoResult;
+
+    [ObservableProperty]
+    private bool _fullAutoResultOk;
+
+    [ObservableProperty]
     private string _detectionSummary = "Detection has not run yet.";
 
-    protected PortableListViewModel(IPortableService portables, IConfirmationService confirmation)
+    protected PortableListViewModel(
+        IPortableService portables,
+        IConfirmationService confirmation,
+        IFullInstallRunner fullInstall,
+        ISettingsService settings)
     {
         _portables = portables;
         _confirmation = confirmation;
+        _fullInstall = fullInstall;
+        _settings = settings;
+
+        _isFullAutoEnabled = settings.Current.FullAutoEnabled;
+        settings.SettingsChanged += (_, _) => IsFullAutoEnabled = settings.Current.FullAutoEnabled;
     }
+
+    partial void OnFullAutoProgressChanged(int value) => UpdateProgressText();
+
+    partial void OnFullAutoTotalChanged(int value) => UpdateProgressText();
+
+    private void UpdateProgressText() => FullAutoProgressText = $"{FullAutoProgress}/{FullAutoTotal}";
 
     public void SetPortables(
         IEnumerable<PortableManifest> manifests,
@@ -134,6 +175,69 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
         {
             _busy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task RunFullInstallAsync()
+    {
+        if (_busy || !IsFullAutoEnabled)
+            return;
+
+        var selected = Items.Where(i => i.IsSelected && i.Manifest is PortableManifest).ToList();
+        if (selected.Count == 0)
+        {
+            ShowFullInstallResult(false, "Select at least one portable first.");
+            return;
+        }
+
+        _busy = true;
+        IsFullAutoRunning = true;
+        FullAutoTotal = selected.Count;
+        FullAutoProgress = 0;
+        FullAutoProgressText = $"0/{selected.Count}";
+        DetectionSummary = "Full install running...";
+        HasFullAutoResult = false;
+
+        try
+        {
+            var progress = new Progress<FullAutoProgress>(p =>
+            {
+                FullAutoProgress = p.Current;
+                DetectionSummary = $"{p.Current}/{p.Total}: {p.Message}";
+            });
+
+            var outcome = await _fullInstall
+                .RunAsync(selected.Select(i => (ManifestBase)i.Manifest!), progress)
+                .ConfigureAwait(true);
+
+            foreach (var item in selected)
+            {
+                if (item.Manifest is PortableManifest manifest)
+                    item.IsInstalled = _portables.IsInstalled(manifest);
+
+                item.IsSelected = false;
+            }
+
+            ShowFullInstallResult(outcome.Ok, outcome.Message);
+            DetectionSummary = outcome.Message;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Full install failed in Portables");
+            ShowFullInstallResult(false, "Full install failed. See the log for details.");
+        }
+        finally
+        {
+            IsFullAutoRunning = false;
+            _busy = false;
+        }
+    }
+
+    private void ShowFullInstallResult(bool ok, string message)
+    {
+        FullAutoResultOk = ok;
+        FullAutoResultMessage = message;
+        HasFullAutoResult = true;
     }
 
     private void Apply(ResourceItemViewModel item, OperationResult result)

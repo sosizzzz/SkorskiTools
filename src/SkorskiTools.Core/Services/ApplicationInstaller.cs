@@ -16,11 +16,22 @@ public interface IApplicationInstaller
         ApplicationManifest manifest,
         DetectionResult detection,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Runs the installer with the manifest's unattended argument list.</summary>
+    Task<OperationResult> InstallAutomatedAsync(
+        ApplicationManifest manifest,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Runs the registered quiet uninstaller for a confirmed full-auto batch.</summary>
+    Task<OperationResult> UninstallQuietAsync(
+        ApplicationManifest manifest,
+        DetectionResult detection,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>
-/// Installations are manual in 1.0: the original installer is shown to the user and
-/// this method waits for it to finish. All arguments are passed as a list.
+/// Manual installations are shown to the user. Automated installations use only the
+/// silent switches declared in the manifest; nothing is guessed by this class.
 /// </summary>
 public sealed class ApplicationInstaller : IApplicationInstaller
 {
@@ -35,6 +46,84 @@ public sealed class ApplicationInstaller : IApplicationInstaller
         ApplicationManifest manifest,
         CancellationToken cancellationToken = default)
     {
+        var result = await RunInstallerAsync(
+            manifest, manifest.Installation.Arguments, "Installer", cancellationToken)
+            .ConfigureAwait(false);
+
+        if (!result.Success)
+            return result;
+
+        return result.ExitCode == 0
+            ? OperationResult.Ok($"Installer for {manifest.Name} finished successfully.", result.ExitCode)
+            : OperationResult.Fail($"Installer for {manifest.Name} exited with code {result.ExitCode}.", result.ExitCode);
+    }
+
+    public async Task<OperationResult> InstallAutomatedAsync(
+        ApplicationManifest manifest,
+        CancellationToken cancellationToken = default)
+    {
+        var fullAuto = manifest.FullAuto;
+        if (fullAuto is null || !fullAuto.Enabled)
+            return OperationResult.Fail($"{manifest.Name} is not configured for Full Auto.");
+
+        if (fullAuto.InstallArguments.Count == 0)
+            return OperationResult.Fail($"{manifest.Name} has no verified silent switches.");
+
+        return await RunInstallerAsync(
+            manifest, fullAuto.InstallArguments, "Full Auto installer", cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<OperationResult> UninstallAsync(
+        ApplicationManifest manifest,
+        DetectionResult detection,
+        CancellationToken cancellationToken = default)
+    {
+        var entry = detection.Entry;
+        if (entry is null || string.IsNullOrWhiteSpace(entry.UninstallString))
+        {
+            if (entry is not null && !string.IsNullOrWhiteSpace(entry.QuietUninstallString))
+                return await RunCommandAsync(
+                        manifest, entry.QuietUninstallString, Array.Empty<string>(), cancellationToken)
+                    .ConfigureAwait(false);
+
+            return OperationResult.Fail(
+                $"No registered uninstaller was found for {manifest.Name}. Nothing was removed.");
+        }
+
+        return await RunCommandAsync(
+                manifest, entry.UninstallString, Array.Empty<string>(), cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<OperationResult> UninstallQuietAsync(
+        ApplicationManifest manifest,
+        DetectionResult detection,
+        CancellationToken cancellationToken = default)
+    {
+        var entry = detection.Entry;
+        if (entry is null)
+            return OperationResult.Fail($"No registry entry was found for {manifest.Name}.");
+
+        var preferQuiet = manifest.FullAuto?.Uninstall.UseQuietUninstallString ?? true;
+        var command = preferQuiet && !string.IsNullOrWhiteSpace(entry.QuietUninstallString)
+            ? entry.QuietUninstallString
+            : entry.UninstallString;
+
+        if (string.IsNullOrWhiteSpace(command))
+            return OperationResult.Fail($"No registered uninstaller was found for {manifest.Name}.");
+
+        var arguments = manifest.FullAuto?.Uninstall.Arguments ?? Array.Empty<string>();
+        return await RunCommandAsync(manifest, command, arguments, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    private async Task<OperationResult> RunInstallerAsync(
+        ApplicationManifest manifest,
+        IReadOnlyList<string> arguments,
+        string label,
+        CancellationToken cancellationToken)
+    {
         var file = ArchitectureSelector.Select(manifest.Files);
         if (file is null)
             return OperationResult.Fail("The manifest does not define any installer file.");
@@ -46,66 +135,50 @@ public sealed class ApplicationInstaller : IApplicationInstaller
         if (!Sha256Verifier.Matches(path, file.Sha256))
             return OperationResult.Fail($"SHA-256 mismatch for '{file.File}'. The operation was cancelled.");
 
+        var start = new ProcessStartInfo(path)
+        {
+            UseShellExecute = true,
+            WorkingDirectory = manifest.ResourceDirectory
+        };
+
+        foreach (var argument in arguments)
+        {
+            if (!string.IsNullOrWhiteSpace(argument))
+                start.ArgumentList.Add(argument);
+        }
+
         try
         {
-            var start = new ProcessStartInfo(path)
-            {
-                UseShellExecute = true,
-                WorkingDirectory = manifest.ResourceDirectory
-            };
-
-            foreach (var argument in manifest.Installation.Arguments)
-            {
-                if (!string.IsNullOrWhiteSpace(argument))
-                    start.ArgumentList.Add(argument);
-            }
-
-            _logger.Information("Starting installer for {Id}: {Path}", manifest.Id, path);
+            _logger.Information("Starting {Label} for {Id}: {Path}", label, manifest.Id, path);
             using var process = Process.Start(start);
             if (process is null)
                 return OperationResult.Fail("The installer could not be started.");
 
             await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-            _logger.Information("Installer for {Id} finished with code {Code}", manifest.Id, process.ExitCode);
+            _logger.Information("{Label} for {Id} exited with code {Code}", label, manifest.Id, process.ExitCode);
 
-            return process.ExitCode == 0
-                ? OperationResult.Ok($"Installer for {manifest.Name} finished successfully.")
-                : OperationResult.Fail($"Installer for {manifest.Name} exited with code {process.ExitCode}.");
+            return new OperationResult(true, $"{label} for {manifest.Name} finished.")
+            {
+                ExitCode = process.ExitCode
+            };
         }
-        catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException)
+        catch (Exception ex) when (ex is IOException
+                                   or InvalidOperationException
+                                   or UnauthorizedAccessException
+                                   or OperationCanceledException)
         {
-            _logger.Error(ex, "Installer for {Id} failed", manifest.Id);
+            _logger.Error(ex, "{Label} for {Id} failed", label, manifest.Id);
             return OperationResult.Fail($"The installer could not be started: {ex.Message}");
         }
-    }
-
-    public async Task<OperationResult> UninstallAsync(
-        ApplicationManifest manifest,
-        DetectionResult detection,
-        CancellationToken cancellationToken = default)
-    {
-        var entry = detection.Entry;
-        if (entry is null || string.IsNullOrWhiteSpace(entry.UninstallString))
-        {
-            // A QuietUninstallString alone is still a validated registry value.
-            if (entry is not null && !string.IsNullOrWhiteSpace(entry.QuietUninstallString))
-                return await RunCommandAsync(manifest, entry.QuietUninstallString, cancellationToken)
-                    .ConfigureAwait(false);
-
-            return OperationResult.Fail(
-                $"No registered uninstaller was found for {manifest.Name}. Nothing was removed.");
-        }
-
-        return await RunCommandAsync(manifest, entry.UninstallString, cancellationToken)
-            .ConfigureAwait(false);
     }
 
     private async Task<OperationResult> RunCommandAsync(
         ApplicationManifest manifest,
         string command,
+        IReadOnlyList<string> extraArguments,
         CancellationToken cancellationToken)
     {
-        var (executable, arguments) = SplitCommand(command);
+        var (executable, argumentText) = SplitCommand(command);
 
         if (string.IsNullOrWhiteSpace(executable))
             return OperationResult.Fail("The registered uninstall command is empty.");
@@ -113,25 +186,30 @@ public sealed class ApplicationInstaller : IApplicationInstaller
         if (Path.IsPathRooted(executable) && !File.Exists(executable))
             return OperationResult.Fail("The registered uninstaller executable does not exist.");
 
+        var start = new ProcessStartInfo(executable) { UseShellExecute = true };
+
+        foreach (var argument in ParseArguments(argumentText).Concat(extraArguments))
+        {
+            if (!string.IsNullOrWhiteSpace(argument))
+                start.ArgumentList.Add(argument);
+        }
+
         try
         {
-            var start = new ProcessStartInfo(executable)
-            {
-                UseShellExecute = true
-            };
-
-            foreach (var argument in ParseArguments(arguments))
-                start.ArgumentList.Add(argument);
-
             _logger.Information("Starting uninstaller for {Id}", manifest.Id);
             using var process = Process.Start(start);
             if (process is null)
                 return OperationResult.Fail("The uninstaller could not be started.");
 
             await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-            return OperationResult.Ok($"Uninstaller for {manifest.Name} finished.");
+            _logger.Information("Uninstaller for {Id} exited with code {Code}", manifest.Id, process.ExitCode);
+
+            return OperationResult.Ok($"Uninstaller for {manifest.Name} finished.", process.ExitCode);
         }
-        catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException)
+        catch (Exception ex) when (ex is IOException
+                                   or InvalidOperationException
+                                   or UnauthorizedAccessException
+                                   or OperationCanceledException)
         {
             _logger.Error(ex, "Uninstaller for {Id} failed", manifest.Id);
             return OperationResult.Fail($"The uninstaller could not be started: {ex.Message}");

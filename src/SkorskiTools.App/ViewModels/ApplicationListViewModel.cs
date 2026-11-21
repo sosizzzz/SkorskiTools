@@ -16,6 +16,8 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
     private readonly IInstallationDetector _detector;
     private readonly IApplicationInstaller _installer;
     private readonly IConfirmationService _confirmation;
+    private readonly IFullInstallRunner _fullInstall;
+    private readonly ISettingsService _settings;
 
     private bool _busy;
 
@@ -23,17 +25,54 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
     private bool _isDetecting;
 
     [ObservableProperty]
+    private bool _isFullAutoEnabled;
+
+    [ObservableProperty]
+    private bool _isFullAutoRunning;
+
+    [ObservableProperty]
+    private int _fullAutoProgress;
+
+    [ObservableProperty]
+    private int _fullAutoTotal;
+
+    [ObservableProperty]
+    private string _fullAutoProgressText = "0/0";
+
+    [ObservableProperty]
+    private string _fullAutoResultMessage = string.Empty;
+
+    [ObservableProperty]
+    private bool _hasFullAutoResult;
+
+    [ObservableProperty]
+    private bool _fullAutoResultOk;
+
+    [ObservableProperty]
     private string _detectionSummary = "Detection has not run yet.";
 
     protected ApplicationListViewModel(
         IInstallationDetector detector,
         IApplicationInstaller installer,
-        IConfirmationService confirmation)
+        IConfirmationService confirmation,
+        IFullInstallRunner fullInstall,
+        ISettingsService settings)
     {
         _detector = detector;
         _installer = installer;
         _confirmation = confirmation;
+        _fullInstall = fullInstall;
+        _settings = settings;
+
+        _isFullAutoEnabled = settings.Current.FullAutoEnabled;
+        settings.SettingsChanged += (_, _) => IsFullAutoEnabled = settings.Current.FullAutoEnabled;
     }
+
+    partial void OnFullAutoProgressChanged(int value) => UpdateProgressText();
+
+    partial void OnFullAutoTotalChanged(int value) => UpdateProgressText();
+
+    private void UpdateProgressText() => FullAutoProgressText = $"{FullAutoProgress}/{FullAutoTotal}";
 
     public void SetApplications(
         IEnumerable<ApplicationManifest> manifests,
@@ -172,6 +211,68 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
         {
             _busy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task RunFullInstallAsync()
+    {
+        if (_busy || !IsFullAutoEnabled)
+            return;
+
+        var selected = Items.Where(i => i.IsSelected && i.Manifest is ApplicationManifest).ToList();
+        if (selected.Count == 0)
+        {
+            ShowFullInstallResult(false, "Select at least one application first.");
+            return;
+        }
+
+        _busy = true;
+        IsFullAutoRunning = true;
+        FullAutoTotal = selected.Count;
+        FullAutoProgress = 0;
+        FullAutoProgressText = $"0/{selected.Count}";
+        DetectionSummary = "Full install running...";
+        HasFullAutoResult = false;
+
+        try
+        {
+            var progress = new Progress<FullAutoProgress>(p =>
+            {
+                FullAutoProgress = p.Current;
+                DetectionSummary = $"{p.Current}/{p.Total}: {p.Message}";
+            });
+
+            var manifests = selected.Select(i => (ManifestBase)i.Manifest!).ToList();
+            var outcome = await _fullInstall.RunAsync(manifests, progress).ConfigureAwait(true);
+
+            foreach (var item in selected)
+            {
+                if (item.Manifest is ApplicationManifest manifest)
+                    Apply(item, await _detector.DetectAsync(manifest).ConfigureAwait(true));
+
+                item.IsSelected = false;
+            }
+
+            ShowFullInstallResult(outcome.Ok, outcome.Message);
+            DetectionSummary = outcome.Message;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Full install failed in {Section}", Title);
+            ShowFullInstallResult(false, "Full install failed. See the log for details.");
+        }
+        finally
+        {
+            IsFullAutoRunning = false;
+            _busy = false;
+        }
+    }
+
+    private void ShowFullInstallResult(bool ok, string message)
+    {
+        FullAutoResultOk = ok;
+        FullAutoResultMessage = message;
+        HasFullAutoResult = true;
     }
 
     private static void Apply(ResourceItemViewModel item, DetectionResult result)

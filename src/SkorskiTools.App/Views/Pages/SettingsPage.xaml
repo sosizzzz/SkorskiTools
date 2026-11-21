@@ -83,7 +83,7 @@
                             <TextBlock Text="{Binding FullAutoStatus}" FontSize="11"
                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         </Border>
-                        <ui:ToggleSwitch IsChecked="{Binding FullAutoEnabled, Mode=OneWay}" IsEnabled="False" />
+                        <ui:ToggleSwitch AutomationProperties.Name="Full Auto toggle" IsChecked="{Binding FullAutoEnabled}" />
                     </StackPanel>
                 </Grid>
             </Border>

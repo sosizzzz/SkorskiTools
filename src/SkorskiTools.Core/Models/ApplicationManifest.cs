@@ -7,4 +7,7 @@ public sealed class ApplicationManifest : ManifestBase
     public DetectionConfig? Detection { get; init; }
     public InstallationConfig Installation { get; init; } = new();
     public UninstallationConfig Uninstallation { get; init; } = new();
+
+    /// <summary>Optional unattended installation settings. Never enabled implicitly.</summary>
+    public FullAutoConfig? FullAuto { get; init; }
 }

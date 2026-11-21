@@ -95,6 +95,7 @@ public sealed partial class ManifestReader
         var files = ValidateFiles(dto.Files, resourceDirectory, "files", errors);
         var detection = ValidateDetection(dto.Detection, errors);
         var uninstallation = ValidateUninstallation(dto.Uninstallation, errors);
+        var fullAuto = ValidateFullAuto(dto.FullAuto, errors);
         var arguments = dto.Installation?.Arguments ?? new List<string>();
 
         if (arguments.Any(string.IsNullOrWhiteSpace))
@@ -118,7 +119,8 @@ public sealed partial class ManifestReader
             Files = files,
             Detection = detection,
             Installation = new InstallationConfig { Arguments = arguments.ToArray() },
-            Uninstallation = uninstallation
+            Uninstallation = uninstallation,
+            FullAuto = fullAuto
         });
     }
 
@@ -310,6 +312,42 @@ public sealed partial class ManifestReader
             ProductCode = dto.ProductCode,
             Path = dto.Path,
             Executable = dto.Executable
+        };
+    }
+
+    private static FullAutoConfig? ValidateFullAuto(FullAutoDto? dto, List<string> errors)
+    {
+        if (dto is null)
+            return null;
+
+        var arguments = dto.InstallArguments ?? new List<string>();
+        if (dto.Enabled && arguments.Count == 0)
+            errors.Add("fullAuto.installArguments must contain verified silent switches when fullAuto.enabled is true");
+
+        if (arguments.Any(string.IsNullOrWhiteSpace))
+            errors.Add("fullAuto.installArguments must not contain empty values");
+
+        if (dto.ExpectedExitCodes is { Count: 0 })
+            errors.Add("fullAuto.expectedExitCodes must not be empty");
+
+        if (dto.RestartExitCodes is { Count: 0 })
+            errors.Add("fullAuto.restartExitCodes must not be empty");
+
+        var uninstallArguments = dto.Uninstall?.Arguments ?? new List<string>();
+        if (uninstallArguments.Any(string.IsNullOrWhiteSpace))
+            errors.Add("fullAuto.uninstall.arguments must not contain empty values");
+
+        return new FullAutoConfig
+        {
+            Enabled = dto.Enabled,
+            InstallArguments = arguments.ToArray(),
+            ExpectedExitCodes = dto.ExpectedExitCodes?.ToArray() ?? new[] { 0 },
+            RestartExitCodes = dto.RestartExitCodes?.ToArray() ?? new[] { 3010, 1641 },
+            Uninstall = new FullAutoUninstallConfig
+            {
+                UseQuietUninstallString = dto.Uninstall?.UseQuietUninstallString ?? true,
+                Arguments = uninstallArguments.ToArray()
+            }
         };
     }
 

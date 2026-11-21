@@ -8,8 +8,10 @@ public sealed class BrowsersViewModel : ApplicationListViewModel
     public BrowsersViewModel(
         IInstallationDetector detector,
         IApplicationInstaller installer,
-        IConfirmationService confirmation)
-        : base(detector, installer, confirmation)
+        IConfirmationService confirmation,
+        IFullInstallRunner fullInstall,
+        ISettingsService settings)
+        : base(detector, installer, confirmation, fullInstall, settings)
     {
     }
 

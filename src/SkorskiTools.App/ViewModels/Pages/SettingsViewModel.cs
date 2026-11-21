@@ -1,11 +1,25 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using SkorskiTools.App.Infrastructure;
 using SkorskiTools.Core.Infrastructure;
+using SkorskiTools.Core.Services;
 
 namespace SkorskiTools.App.ViewModels.Pages;
 
-/// <summary>Read-only information about the current installation and preferences.</summary>
-public sealed class SettingsViewModel : ViewModelBase
+/// <summary>Information and preferences about the current installation.</summary>
+public sealed partial class SettingsViewModel : ViewModelBase
 {
+    private readonly ISettingsService _settings;
+
+    [ObservableProperty]
+    private bool _fullAutoEnabled;
+
+    public SettingsViewModel(ISettingsService settings)
+    {
+        _settings = settings;
+        _fullAutoEnabled = settings.Current.FullAutoEnabled;
+        settings.SettingsChanged += (_, _) => FullAutoEnabled = settings.Current.FullAutoEnabled;
+    }
+
     public override string Title => "Settings";
 
     public string Subtitle => "Version information, paths and installation preferences.";
@@ -22,12 +36,18 @@ public sealed class SettingsViewModel : ViewModelBase
     public string InstallationMode => "Manual";
 
     public string InstallationModeDescription =>
-        "Installers are shown to the user and completed manually in 1.0.";
-
-    public bool FullAutoEnabled => false;
-
-    public string FullAutoStatus => "Coming soon";
+        "Installers are shown to the user and completed manually unless Full Auto is enabled.";
 
     public string FullAutoDescription =>
-        "Unattended installation is not part of 1.0. This option does nothing.";
+        "When enabled, every list shows selection checkboxes and a Full install button. " +
+        "Selected resources are installed one by one with the silent switches declared in their manifests; " +
+        "resources without verified switches are skipped.";
+
+    public string FullAutoStatus => FullAutoEnabled ? "Enabled" : "Disabled";
+
+    partial void OnFullAutoEnabledChanged(bool value)
+    {
+        _settings.SetFullAutoEnabled(value);
+        OnPropertyChanged(nameof(FullAutoStatus));
+    }
 }

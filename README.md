@@ -76,6 +76,11 @@ else needs to be installed.
   product code, file existence and installation path. Manual install, uninstall with
   a named confirmation, and repair-style reinstall. Button states always reflect the
   real detected state, and **Detect applications** re-runs the check.
+- **Full install** — enable it in Settings to show a checkbox on each application,
+  browser and portable. Select the ones you want and press **Full install** to run
+  them **sequentially** with their configured silent switches, a `1/3` progress
+  counter, a large result message and a notification sound. Manual buttons are
+  unchanged; nothing is downloaded and no switch is guessed.
 - **Browsers** — a separate section that reuses the exact same application logic.
   Firefox and Chrome are included out of the box.
 - **Portables** — deployed atomically into the user profile, with a desktop shortcut
@@ -164,11 +169,11 @@ The installer is written to `installer\output\SkorskiTools-Setup.exe`.
 
 ## Roadmap (after 1.0)
 
-- **Skorski's Config** — optional, user-level browser configuration (not enterprise policy).
-- **Full Auto** — optional unattended installation.
+- **Skorski's Config** — optional, user-level browser configuration (not enterprise policy). See `docs/roadmap.md`.
 
-Both are intentionally absent from 1.0: there is no placeholder button or partial
-implementation that could be activated by accident.
+Full install was added after 1.0. Skorski's Config is intentionally not implemented
+yet: there is no placeholder button or partial implementation that could be
+activated by accident.
 
 ---
 
