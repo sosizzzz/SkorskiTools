@@ -19,6 +19,10 @@ public sealed class ResourceCatalogServiceTests
         Assert.NotNull(office.FullAuto);
         Assert.False(office.FullAuto!.Supported);
         Assert.False(string.IsNullOrWhiteSpace(office.FullAuto.UnsupportedReason));
+
+        var acrobat = result.Applications.Single(a => a.Id == "acrobat-reader");
+        Assert.NotNull(acrobat.FullAuto);
+        Assert.False(acrobat.FullAuto!.Supported);
         Assert.Equal(2, result.Portables.Count);
         Assert.Single(result.Auxiliary);
         Assert.Equal(2, result.Scripts.Count);

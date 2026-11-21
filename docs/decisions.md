@@ -269,6 +269,27 @@ empty between deliveries. This avoids keeping duplicate copies of large installe
   files and is not a self-contained silent installer. Its checkbox is disabled with a
   tooltip explaining that the limitation comes from Microsoft's installer. Firefox is
   blocked for the same reason (stub installer).
+- Acrobat Reader is also blocked: the bundled `Reader_es_install.exe` is only 1.6 MB,
+  i.e. Adobe's consumer **stub**. Adobe's own deployment guide says the consumer stub
+  is not suitable for unattended deployment; the full offline installer is ~700 MB.
+  To re-enable it, the owner must provide that full installer — we will not download it.
+
+### Full install compatibility audit
+
+| Resource | Silent method | Verdict |
+|---|---|---|
+| LocalSend | Inno Setup `/VERYSILENT /SUPPRESSMSGBOXES /NORESTART` | Compatible |
+| Git for Windows | Inno Setup `/VERYSILENT /NORESTART /SP-` | Compatible |
+| VLC 3.0.24 | NSIS `/L=1033 /S` | Compatible |
+| Flow Launcher | `--silent` (community deployment guides; vendor docs do not list install switches) | Compatible, lower confidence |
+| Chrome | `/silent /install` | Compatible |
+| Brave | Tagged meta installer accepts `--install --silent --system-level`; it fetches the browser during setup | Compatible but needs internet |
+| Firefox | Stub installer has no silent mode | Blocked |
+| Acrobat Reader | Consumer stub unsuitable for unattended use | Blocked |
+| Office | ODT needs an online configuration download | Blocked |
+
+The selection checkbox is wrapped in an enabled `Border` carrying the tooltip, because
+a disabled WPF control does not raise tooltip events by itself.
 - Git: registry detection `Git` (exact — verified against the installed entry),
   silent `/VERYSILENT /NORESTART /SP-`, machine scope.
 

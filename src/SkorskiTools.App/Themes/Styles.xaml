@@ -164,12 +164,17 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <CheckBox Grid.Column="0" Style="{StaticResource FullAutoCheckBoxStyle}"
-                          IsChecked="{Binding IsSelected}"
-                          IsEnabled="{Binding CanSelectForFullAuto}"
-                          ToolTip="{Binding SelectionTooltip}"
-                          AutomationProperties.Name="{Binding Title}"
-                          Visibility="{Binding DataContext.IsFullAutoEnabled, RelativeSource={RelativeSource AncestorType=ListBox}, Converter={StaticResource BoolToVisibility}}" />
+                <Border Grid.Column="0" Background="Transparent" HorizontalAlignment="Center"
+                        VerticalAlignment="Center" ToolTip="{Binding SelectionTooltip}"
+                        AutomationProperties.HelpText="{Binding SelectionTooltip}"
+                        ToolTipService.InitialShowDelay="200"
+                        ToolTipService.ShowDuration="6000"
+                        Visibility="{Binding DataContext.IsFullAutoEnabled, RelativeSource={RelativeSource AncestorType=ListBox}, Converter={StaticResource BoolToVisibility}}">
+                    <CheckBox Style="{StaticResource FullAutoCheckBoxStyle}"
+                              IsChecked="{Binding IsSelected}"
+                              IsEnabled="{Binding CanSelectForFullAuto}"
+                              AutomationProperties.Name="{Binding Title}" />
+                </Border>
 
                 <Grid Grid.Column="1" VerticalAlignment="Center">
                     <Image Source="{Binding IconPath}" Width="32" Height="32"
