@@ -51,6 +51,7 @@ internal sealed class UninstallationDto
 internal sealed class FullAutoDto
 {
     public bool Enabled { get; set; }
+    public string Scope { get; set; } = string.Empty;
     public List<string>? InstallArguments { get; set; }
     public List<int>? ExpectedExitCodes { get; set; }
     public List<int>? RestartExitCodes { get; set; }

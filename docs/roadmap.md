@@ -19,6 +19,7 @@ manifest. It is independent of the manual `installation` block:
 ```json
 "fullAuto": {
   "enabled": true,
+  "scope": "user",
   "installArguments": ["/VERYSILENT", "/NORESTART"],
   "expectedExitCodes": [0],
   "restartExitCodes": [3010, 1641],
@@ -32,6 +33,8 @@ manifest. It is independent of the manual `installation` block:
 Rules:
 
 - `enabled` defaults to `false`.
+- `scope` defaults to `user`; `machine` runs only that installer with `Verb=runas`
+  (UAC for that single operation). The app itself is never elevated.
 - A manifest with `enabled: true` and no `installArguments` is **invalid**: Skorski
   Tools must not guess a vendor's silent switches.
 - `expectedExitCodes` defaults to `[0]`; `restartExitCodes` defaults to `[3010, 1641]`.

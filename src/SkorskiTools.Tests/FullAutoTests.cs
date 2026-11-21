@@ -46,6 +46,28 @@ public sealed class FullAutoTests
     }
 
     [Fact]
+    public void ManifestReader_ParsesMachineScope()
+    {
+        var root = TestData.CreateTempResources();
+        var hash = TestData.CreateResource(root, "installers/test-app", "setup.exe");
+        TestData.WriteManifest(root, "installers/test-app", AppJson(hash, """
+            ,"fullAuto": {
+              "enabled": true,
+              "scope": "machine",
+              "installArguments": ["/VERYSILENT"]
+            }
+            """));
+
+        var reader = new ManifestReader(TestData.SchemasDirectory, new[] { "utilities" });
+        var result = reader.Read(Path.Combine(root, "installers", "test-app", "manifest.json"),
+            ManifestKind.Application);
+
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+        var manifest = Assert.IsType<ApplicationManifest>(result.Manifest);
+        Assert.Equal(InstallationScope.Machine, manifest.FullAuto!.Scope);
+    }
+
+    [Fact]
     public async Task BuildPlan_UsesDetectionAndSkipsIneligibleApps()
     {
         var eligible = Manifest("eligible", true);

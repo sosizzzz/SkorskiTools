@@ -35,6 +35,13 @@ public enum NameMatchMode
 }
 
 /// <summary>Supported uninstall mechanisms.</summary>
+/// <summary>Scope requested for an unattended installer.</summary>
+public enum InstallationScope
+{
+    User,
+    Machine
+}
+
 public enum UninstallMode
 {
     RegisteredUninstaller,

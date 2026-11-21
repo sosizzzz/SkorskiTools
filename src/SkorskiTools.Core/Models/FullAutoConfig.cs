@@ -5,6 +5,8 @@ public sealed class FullAutoConfig
 {
     public bool Enabled { get; init; }
 
+    public InstallationScope Scope { get; init; } = InstallationScope.User;
+
     /// <summary>Silent switches passed to the original installer as separate arguments.</summary>
     public IReadOnlyList<string> InstallArguments { get; init; } = Array.Empty<string>();
 

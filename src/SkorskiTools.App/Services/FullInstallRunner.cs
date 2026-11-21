@@ -47,7 +47,13 @@ public sealed class FullInstallRunner : IFullInstallRunner
                 false,
                 "No selected resource can be installed automatically. Applications need verified silent switches in their manifest.");
 
-        var lines = plan.Items.Select(item => $"• {item.Action}: {item.Manifest.Name}");
+        var lines = plan.Items.Select(item =>
+        {
+            var scope = item.Manifest is ApplicationManifest application && application.FullAuto is not null
+                ? application.FullAuto.Scope == InstallationScope.Machine ? "team (UAC)" : "current user"
+                : "portable";
+            return $"• {item.Action}: {item.Manifest.Name} [{scope}]";
+        });
         var skipped = plan.Skipped.Select(s => $"• Skipped: {s.Name} ({s.Reason})");
         var message = string.Join(Environment.NewLine, lines.Concat(skipped));
 

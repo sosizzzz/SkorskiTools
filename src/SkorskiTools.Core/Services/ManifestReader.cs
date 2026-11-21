@@ -327,6 +327,18 @@ public sealed partial class ManifestReader
         if (arguments.Any(string.IsNullOrWhiteSpace))
             errors.Add("fullAuto.installArguments must not contain empty values");
 
+        InstallationScope scope;
+        switch (dto.Scope.ToLowerInvariant())
+        {
+            case "":
+            case "user": scope = InstallationScope.User; break;
+            case "machine": scope = InstallationScope.Machine; break;
+            default:
+                errors.Add($"fullAuto.scope '{dto.Scope}' is invalid (expected user or machine)");
+                scope = InstallationScope.User;
+                break;
+        }
+
         if (dto.ExpectedExitCodes is { Count: 0 })
             errors.Add("fullAuto.expectedExitCodes must not be empty");
 
@@ -340,6 +352,7 @@ public sealed partial class ManifestReader
         return new FullAutoConfig
         {
             Enabled = dto.Enabled,
+            Scope = scope,
             InstallArguments = arguments.ToArray(),
             ExpectedExitCodes = dto.ExpectedExitCodes?.ToArray() ?? new[] { 0 },
             RestartExitCodes = dto.RestartExitCodes?.ToArray() ?? new[] { 3010, 1641 },

@@ -141,6 +141,9 @@ public sealed class ApplicationInstaller : IApplicationInstaller
             WorkingDirectory = manifest.ResourceDirectory
         };
 
+        if (manifest.FullAuto?.Scope == InstallationScope.Machine)
+            start.Verb = "runas";
+
         foreach (var argument in arguments)
         {
             if (!string.IsNullOrWhiteSpace(argument))
@@ -187,6 +190,9 @@ public sealed class ApplicationInstaller : IApplicationInstaller
             return OperationResult.Fail("The registered uninstaller executable does not exist.");
 
         var start = new ProcessStartInfo(executable) { UseShellExecute = true };
+
+        if (manifest.FullAuto?.Scope == InstallationScope.Machine)
+            start.Verb = "runas";
 
         foreach (var argument in ParseArguments(argumentText).Concat(extraArguments))
         {
