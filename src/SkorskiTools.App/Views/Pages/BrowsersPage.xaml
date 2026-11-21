@@ -25,6 +25,7 @@
                 <ColumnDefinition Width="110" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ui:TextBox PlaceholderText="Search browsers..." MinWidth="120"
                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
@@ -37,6 +38,10 @@
             <ui:Button Grid.Column="3" Margin="8,0,0,0" Content="Full install"
                        Appearance="Primary" Padding="10,4" FontSize="12"
                        Command="{Binding RunFullInstallCommand}"
+                       Visibility="{Binding IsFullAutoEnabled, Converter={StaticResource BoolToVisibility}}" />
+            <ui:Button Grid.Column="4" Margin="8,0,0,0" Content="Simulate"
+                       Padding="10,4" FontSize="12"
+                       Command="{Binding SimulateCommand}"
                        Visibility="{Binding IsFullAutoEnabled, Converter={StaticResource BoolToVisibility}}" />
         </Grid>
 
@@ -68,8 +73,10 @@
                     </Style.Triggers>
                 </Style>
             </Border.Style>
-            <TextBlock Text="{Binding FullAutoResultMessage}" FontSize="14" FontWeight="SemiBold"
-                       Foreground="#C8E6C9" TextWrapping="Wrap" />
+            <ScrollViewer MaxHeight="240" VerticalScrollBarVisibility="Auto">
+                <TextBlock Text="{Binding FullAutoResultMessage}" FontSize="13" FontWeight="SemiBold"
+                           Foreground="#C8E6C9" TextWrapping="Wrap" />
+            </ScrollViewer>
         </Border>
 
         <Grid Grid.Row="5">

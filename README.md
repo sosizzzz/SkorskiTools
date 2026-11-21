@@ -79,8 +79,9 @@ else needs to be installed.
 - **Full install** — enable it in Settings to show a checkbox on each application,
   browser and portable. Select the ones you want and press **Full install** to run
   them **sequentially** with their configured silent switches, a `1/3` progress
-  counter, a large result message and a notification sound. Manual buttons are
-  unchanged and no switch is guessed. Skorski Tools itself downloads nothing; the
+  counter, a large result message and a notification sound. A **Simulate** button
+  shows the exact commands, hashes, scope and skipped resources without executing
+  anything. Manual buttons are unchanged and no switch is guessed. Skorski Tools itself downloads nothing; the
   bundled Office installer does fetch Office files from Microsoft as part of its own
   normal behavior. Installers that cannot run unattended (currently the Firefox stub)
   show a disabled checkbox with an explanatory tooltip.

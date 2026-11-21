@@ -34,6 +34,7 @@ installer argument parsing, auxiliary copying and portable deployment.
 | Empty selection | Shows "Select at least one ... first" banner |
 | Eligible checkboxes | 4 in Applications, 2 in Browsers (Chrome) and 2 in Portables |
 | Blocked checkbox | Firefox disabled with tooltip explaining the Mozilla stub limitation |
+| Simulate button | Showed exact commands and `SHA-256: OK` for 4 applications; no installer process was started |
 | Executable icon resource | `RT_GROUP_ICON` present in `SkorskiTools.App.exe` |
 | Portable desktop shortcut | Real `.lnk` created, `IconLocation` = shipped `SkorskiTools.ico`, and removed on uninstall |
 

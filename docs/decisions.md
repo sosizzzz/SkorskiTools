@@ -220,3 +220,11 @@ offline installer later to enable it, without code changes.
 for that single installer. Skorski Tools itself is never elevated.
 
 `fullAuto.configurationFile` is verified with SHA-256 exactly like other resources.
+
+### Simulation mode
+Because the test machine has hardware virtualization disabled, a disposable VM was
+not available. A **Simulate** button was added next to *Full install*: it builds the
+same plan, resolves the real paths, verifies hashes and prints the exact commands
+(`installer.exe <args>`), scope and UAC expectation, but never starts a process.
+This proves the manifest configuration without touching the machine. It cannot prove
+a vendor's silent switch works; that still requires an isolated test environment.

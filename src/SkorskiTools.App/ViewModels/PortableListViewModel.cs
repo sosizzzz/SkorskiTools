@@ -233,6 +233,37 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
         }
     }
 
+    [RelayCommand]
+    private async Task SimulateAsync()
+    {
+        if (_busy || !IsFullAutoEnabled)
+            return;
+
+        var selected = Items.Where(i => i.IsSelected && i.Manifest is PortableManifest).ToList();
+        if (selected.Count == 0)
+        {
+            ShowFullInstallResult(false, "Select at least one portable first.");
+            return;
+        }
+
+        var preview = await _fullInstall
+            .PreviewAsync(selected.Select(i => (ManifestBase)i.Manifest!))
+            .ConfigureAwait(true);
+
+        var text = new List<string> { "SIMULATION - nothing was executed." };
+        foreach (var line in preview.Lines)
+        {
+            text.Add($"• {line.Action}: {line.Name} [{line.Scope}]");
+            text.Add($"    {line.Command}");
+            text.Add($"    SHA-256: {(line.HashValid ? "OK" : "MISMATCH")}");
+        }
+        foreach (var skipped in preview.Skipped)
+            text.Add($"• SKIPPED: {skipped.Name} - {skipped.Reason}");
+
+        ShowFullInstallResult(preview.AllHashesValid, string.Join(Environment.NewLine, text));
+        DetectionSummary = "Simulation ready.";
+    }
+
     private void ShowFullInstallResult(bool ok, string message)
     {
         FullAutoResultOk = ok;
