@@ -3,12 +3,12 @@
     "id":  "vlc",
     "name":  "VLC media player",
     "description":  "Media player that handles most formats without codec packs.",
-    "version":  "3.0.23",
+    "version":  "3.0.24",
     "category":  "multimedia",
     "files":  [
                   {
-                      "file":  "vlc-3.0.23-win64.exe",
-                      "sha256":  "20ad191348684b470ddc4e05204316f3d8e39655f412b3e392a0eef97639daaf",
+                      "file":  "vlc-3.0.24-win64.exe",
+                      "sha256":  "d711e1e1fe52052748c39080c7dce63f6b7e4c315efedf1774a3f1957b782ff3",
                       "arch":  "x64"
                   }
               ],
