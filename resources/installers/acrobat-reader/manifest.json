@@ -14,5 +14,10 @@
     "matchMode": "startsWith"
   },
   "installation": { "arguments": [] },
-  "uninstallation": { "mode": "registered-uninstaller" }
+  "uninstallation": { "mode": "registered-uninstaller" },
+  "fullAuto": {
+    "enabled": true,
+    "scope": "machine",
+    "installArguments": ["/sAll", "/rs", "/rps", "/msi", "EULA_ACCEPT=YES"]
+  }
 }

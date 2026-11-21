@@ -68,6 +68,50 @@ public sealed class FullAutoTests
     }
 
     [Fact]
+    public void ManifestReader_UnsupportedWithoutReason_IsRejected()
+    {
+        var root = TestData.CreateTempResources();
+        var hash = TestData.CreateResource(root, "installers/test-app", "setup.exe");
+        TestData.WriteManifest(root, "installers/test-app", AppJson(hash, """
+            ,"fullAuto": { "enabled": false, "supported": false }
+            """));
+
+        var reader = new ManifestReader(TestData.SchemasDirectory, new[] { "utilities" });
+        var result = reader.Read(Path.Combine(root, "installers", "test-app", "manifest.json"),
+            ManifestKind.Application);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("unsupportedReason", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ManifestReader_ConfigurationFileIsHashVerified()
+    {
+        var root = TestData.CreateTempResources();
+        var hash = TestData.CreateResource(root, "installers/test-app", "setup.exe");
+        var config = Path.Combine(root, "installers", "test-app", "configuration.xml");
+        File.WriteAllText(config, "<Configuration />");
+        var configHash = Sha256Verifier.ComputeHex(config);
+
+        TestData.WriteManifest(root, "installers/test-app", AppJson(hash, $$"""
+            ,"fullAuto": {
+              "enabled": true,
+              "installArguments": ["/configure", "configuration.xml"],
+              "configurationFile": "configuration.xml",
+              "configurationSha256": "{{configHash}}"
+            }
+            """));
+
+        var reader = new ManifestReader(TestData.SchemasDirectory, new[] { "utilities" });
+        var result = reader.Read(Path.Combine(root, "installers", "test-app", "manifest.json"),
+            ManifestKind.Application);
+
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+        var manifest = Assert.IsType<ApplicationManifest>(result.Manifest);
+        Assert.Equal("configuration.xml", manifest.FullAuto!.ConfigurationFile);
+    }
+
+    [Fact]
     public async Task BuildPlan_UsesDetectionAndSkipsIneligibleApps()
     {
         var eligible = Manifest("eligible", true);

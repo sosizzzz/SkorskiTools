@@ -14,5 +14,11 @@
     "matchMode": "startsWith"
   },
   "installation": { "arguments": [] },
-  "uninstallation": { "mode": "registered-uninstaller" }
+  "uninstallation": { "mode": "registered-uninstaller" },
+  "fullAuto": {
+    "enabled": false,
+    "scope": "user",
+    "supported": false,
+    "unsupportedReason": "Mozilla's stub installer cannot be installed silently. Only the full offline installer supports /S; the owner must provide that file to enable this."
+  }
 }

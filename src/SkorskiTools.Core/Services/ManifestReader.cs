@@ -95,7 +95,7 @@ public sealed partial class ManifestReader
         var files = ValidateFiles(dto.Files, resourceDirectory, "files", errors);
         var detection = ValidateDetection(dto.Detection, errors);
         var uninstallation = ValidateUninstallation(dto.Uninstallation, errors);
-        var fullAuto = ValidateFullAuto(dto.FullAuto, errors);
+        var fullAuto = ValidateFullAuto(dto.FullAuto, resourceDirectory, errors);
         var arguments = dto.Installation?.Arguments ?? new List<string>();
 
         if (arguments.Any(string.IsNullOrWhiteSpace))
@@ -315,14 +315,36 @@ public sealed partial class ManifestReader
         };
     }
 
-    private static FullAutoConfig? ValidateFullAuto(FullAutoDto? dto, List<string> errors)
+    private static FullAutoConfig? ValidateFullAuto(
+        FullAutoDto? dto,
+        string resourceDirectory,
+        List<string> errors)
     {
         if (dto is null)
             return null;
 
         var arguments = dto.InstallArguments ?? new List<string>();
-        if (dto.Enabled && arguments.Count == 0)
+        if (dto.Enabled && dto.Supported && arguments.Count == 0)
             errors.Add("fullAuto.installArguments must contain verified silent switches when fullAuto.enabled is true");
+
+        if (!dto.Supported && string.IsNullOrWhiteSpace(dto.UnsupportedReason))
+            errors.Add("fullAuto.unsupportedReason is required when fullAuto.supported is false");
+
+        string configurationFile = dto.ConfigurationFile;
+        string configurationHash = dto.ConfigurationSha256;
+        if (!string.IsNullOrWhiteSpace(configurationFile))
+        {
+            var resolved = ResourcePathGuard.Resolve(resourceDirectory, configurationFile);
+            if (resolved is null || !File.Exists(resolved))
+            {
+                errors.Add($"fullAuto.configurationFile '{configurationFile}' does not exist or is unsafe");
+            }
+            else if (!Sha256Verifier.IsValidHashFormat(configurationHash)
+                     || !Sha256Verifier.Matches(resolved, configurationHash))
+            {
+                errors.Add($"SHA-256 mismatch for fullAuto.configurationFile '{configurationFile}'");
+            }
+        }
 
         if (arguments.Any(string.IsNullOrWhiteSpace))
             errors.Add("fullAuto.installArguments must not contain empty values");
@@ -353,6 +375,10 @@ public sealed partial class ManifestReader
         {
             Enabled = dto.Enabled,
             Scope = scope,
+            Supported = dto.Supported,
+            UnsupportedReason = dto.UnsupportedReason,
+            ConfigurationFile = configurationFile,
+            ConfigurationSha256 = configurationHash,
             InstallArguments = arguments.ToArray(),
             ExpectedExitCodes = dto.ExpectedExitCodes?.ToArray() ?? new[] { 0 },
             RestartExitCodes = dto.RestartExitCodes?.ToArray() ?? new[] { 3010, 1641 },

@@ -7,7 +7,7 @@ Executed on Windows 11, .NET 10.0.404, non-elevated user session.
 | Check | Result |
 |---|---|
 | `dotnet build SkorskiTools.sln -c Debug` | 0 errors, 0 warnings |
-| `dotnet test SkorskiTools.sln -c Debug` | 61/61 passed |
+| `dotnet test SkorskiTools.sln -c Debug` | 64/64 passed |
 | Inno Setup compile (`ISCC.exe SkorskiTools.iss`) | Successful, 0 warnings |
 
 Unit test coverage includes: path safety, SHA-256, manifest schema/rules,
@@ -32,6 +32,8 @@ installer argument parsing, auxiliary copying and portable deployment.
 | Selection checkboxes | 4 in Applications, 2 in Portables when enabled |
 | Full install button | Visible and enabled only while the switch is on |
 | Empty selection | Shows "Select at least one ... first" banner |
+| Eligible checkboxes | 4 in Applications, 2 in Browsers (Chrome) and 2 in Portables |
+| Blocked checkbox | Firefox disabled with tooltip explaining the Mozilla stub limitation |
 | Executable icon resource | `RT_GROUP_ICON` present in `SkorskiTools.App.exe` |
 | Portable desktop shortcut | Real `.lnk` created, `IconLocation` = shipped `SkorskiTools.ico`, and removed on uninstall |
 

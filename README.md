@@ -80,7 +80,10 @@ else needs to be installed.
   browser and portable. Select the ones you want and press **Full install** to run
   them **sequentially** with their configured silent switches, a `1/3` progress
   counter, a large result message and a notification sound. Manual buttons are
-  unchanged; nothing is downloaded and no switch is guessed.
+  unchanged and no switch is guessed. Skorski Tools itself downloads nothing; the
+  bundled Office installer does fetch Office files from Microsoft as part of its own
+  normal behavior. Installers that cannot run unattended (currently the Firefox stub)
+  show a disabled checkbox with an explanatory tooltip.
 - **Browsers** — a separate section that reuses the exact same application logic.
   Firefox and Chrome are included out of the box.
 - **Portables** — deployed atomically into the user profile, with a desktop shortcut

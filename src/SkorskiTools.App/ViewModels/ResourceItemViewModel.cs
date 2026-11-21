@@ -37,6 +37,21 @@ public sealed class ResourceItemViewModel : ObservableObject
         set => SetProperty(ref _isSelected, value);
     }
 
+    public bool CanSelectForFullAuto => Manifest switch
+    {
+        ApplicationManifest application =>
+            application.FullAuto is { Supported: true, Enabled: true },
+        PortableManifest => true,
+        _ => false
+    };
+
+    public string SelectionTooltip => Manifest is ApplicationManifest application
+        && application.FullAuto is { Supported: false } unsupported
+            ? unsupported.UnsupportedReason
+            : CanSelectForFullAuto
+                ? "Include in the next full install batch"
+                : "No verified silent switches in the manifest";
+
     public bool HasIcon => !string.IsNullOrWhiteSpace(IconPath);
     public bool HasNoIcon => !HasIcon;
 

@@ -126,6 +126,8 @@
 
                 <CheckBox Grid.Column="0" VerticalAlignment="Center"
                           IsChecked="{Binding IsSelected}"
+                          IsEnabled="{Binding CanSelectForFullAuto}"
+                          ToolTip="{Binding SelectionTooltip}"
                           AutomationProperties.Name="{Binding Title}"
                           Visibility="{Binding DataContext.IsFullAutoEnabled, RelativeSource={RelativeSource AncestorType=ListBox}, Converter={StaticResource BoolToVisibility}}" />
 

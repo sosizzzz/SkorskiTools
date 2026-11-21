@@ -53,6 +53,10 @@
       "properties": {
         "enabled": { "type": "boolean" },
         "scope": { "enum": ["user", "machine"] },
+        "supported": { "type": "boolean" },
+        "unsupportedReason": { "type": "string" },
+        "configurationFile": { "type": "string" },
+        "configurationSha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
         "installArguments": { "type": "array", "items": { "type": "string", "minLength": 1 } },
         "expectedExitCodes": { "type": "array", "minItems": 1, "items": { "type": "integer" } },
         "restartExitCodes": { "type": "array", "minItems": 1, "items": { "type": "integer" } },

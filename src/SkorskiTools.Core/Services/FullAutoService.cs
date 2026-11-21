@@ -53,8 +53,15 @@ public sealed class FullAutoService : IFullAutoService
             DetectionResult detection;
             if (manifest is ApplicationManifest application)
             {
-                if (application.FullAuto is not { Enabled: true }
-                    || application.FullAuto.InstallArguments.Count == 0)
+                var config = application.FullAuto;
+                if (config is null or { Supported: false })
+                {
+                    skipped.Add((manifest.Name,
+                        config?.UnsupportedReason ?? "No unattended configuration in the manifest"));
+                    continue;
+                }
+
+                if (!config.Enabled || config.InstallArguments.Count == 0)
                 {
                     skipped.Add((manifest.Name, "No verified silent switches in the manifest"));
                     continue;

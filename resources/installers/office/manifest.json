@@ -14,5 +14,12 @@
     "matchMode": "startsWith"
   },
   "installation": { "arguments": [] },
-  "uninstallation": { "mode": "registered-uninstaller" }
+  "uninstallation": { "mode": "registered-uninstaller" },
+  "fullAuto": {
+    "enabled": true,
+    "scope": "machine",
+    "installArguments": ["/configure", "configuration.xml"],
+    "configurationFile": "configuration.xml",
+    "configurationSha256": "b51a2e3eff2cb40962ba62ac5717d807a48b31e5db79f09cbd4b314e6943211b"
+  }
 }

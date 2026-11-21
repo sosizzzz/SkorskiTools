@@ -52,6 +52,10 @@ internal sealed class FullAutoDto
 {
     public bool Enabled { get; set; }
     public string Scope { get; set; } = string.Empty;
+    public bool Supported { get; set; } = true;
+    public string UnsupportedReason { get; set; } = string.Empty;
+    public string ConfigurationFile { get; set; } = string.Empty;
+    public string ConfigurationSha256 { get; set; } = string.Empty;
     public List<string>? InstallArguments { get; set; }
     public List<int>? ExpectedExitCodes { get; set; }
     public List<int>? RestartExitCodes { get; set; }

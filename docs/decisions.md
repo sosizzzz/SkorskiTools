@@ -199,6 +199,24 @@ so Applications, Browsers and Portables behave identically without duplicated co
 The UI shows a `current/total` counter during the batch and a prominent green/red
 message plus a Windows notification sound when it finishes.
 
-Silent switches are still owned by the manifest. Until the owner adds verified
-`fullAuto` blocks, applications are skipped with a clear reason and only portables
-are eligible.
+Silent switches are still owned by the manifest. Research was done from public
+vendor/deployment documentation and the owner approved the following values:
+
+| Resource | Arguments | Scope | Source / caveat |
+|---|---|---|---|
+| Flow Launcher | `--silent` | user | Community deployment guides; `/S` is an alternative if this fails |
+| LocalSend | `/VERYSILENT /SUPPRESSMSGBOXES /NORESTART` | user | Inno Setup installer, confirmed by winget/WAPT |
+| Chrome | `/silent /install` | user | Public Google Chromium installer switches; per-user install |
+| Acrobat Reader | `/sAll /rs /rps /msi EULA_ACCEPT=YES` | machine | Adobe documented bootstrapper switches |
+| Office | `/configure configuration.xml` | machine | ODT; the shipped XML uses O365ProPlusRetail, 64-bit, Current channel, language MatchOS, no UI and EULA accepted. **This installer downloads Office files from Microsoft.** |
+| Firefox | — | — | Mozilla documents that the 508 KB **stub** cannot be installed silently; only the full offline installer accepts `/S` |
+
+`fullAuto.supported: false` plus `unsupportedReason` marks Firefox as blocked. Its
+checkbox is visible but disabled, with the reason as a tooltip: the limitation is the
+vendor's installer, not Skorski Tools. The owner can replace the stub with a full
+offline installer later to enable it, without code changes.
+
+`fullAuto.scope: machine` sets `ProcessStartInfo.Verb = "runas"`, so UAC is requested
+for that single installer. Skorski Tools itself is never elevated.
+
+`fullAuto.configurationFile` is verified with SHA-256 exactly like other resources.
