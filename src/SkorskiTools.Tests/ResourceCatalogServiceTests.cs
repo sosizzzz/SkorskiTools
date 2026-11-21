@@ -10,7 +10,7 @@ public sealed class ResourceCatalogServiceTests
     {
         var result = await new ResourceCatalogService().LoadAsync(TestData.ResourcesDirectory);
 
-        Assert.Equal(4, result.Applications.Count);
+        Assert.Equal(6, result.Applications.Count);
         Assert.Equal(2, result.Browsers.Count);
         Assert.Equal(2, result.Portables.Count);
         Assert.Single(result.Auxiliary);

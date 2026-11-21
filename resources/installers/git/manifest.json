@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "git",
+  "name": "Git for Windows",
+  "description": "Git command-line tools and Git Bash for Windows.",
+  "version": "2.56.1",
+  "category": "development",
+  "files": [
+    { "file": "Git-2.56.1-64-bit.exe", "sha256": "c330c72e10b408cc39994bfefdb63542b0d93d21699325c3e0bd874af8a5a559", "arch": "x64" }
+  ],
+  "detection": {
+    "type": "registry",
+    "displayName": "Git",
+    "matchMode": "exact"
+  },
+  "installation": { "arguments": [] },
+  "uninstallation": { "mode": "registered-uninstaller" },
+  "fullAuto": {
+    "enabled": true,
+    "scope": "machine",
+    "installArguments": ["/VERYSILENT", "/NORESTART", "/SP-"]
+  }
+}

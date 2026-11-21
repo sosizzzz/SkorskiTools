@@ -251,3 +251,17 @@ Browsers, Portables and Auxiliary. Scripts keep their code pane.
 `%USERPROFILE%\Skorski-Tools\operation-history.json`. Manual and full-install actions
 append entries; the History page is read-only except for an explicit **Clear history**
 button. This complements the Serilog files without exposing raw logs to normal users.
+
+## New resources: VLC and Git
+
+The owner staged `vlc-3.0.23-win64.exe`, `Git-2.56.1-64-bit.exe` and a LibreOffice MSI
+in `inst/`. Only VLC and Git were added to the catalog, by owner decision: the MSI is
+358 MB and cannot be committed to GitHub. `inst/` is now git-ignored so staging files
+are never included in a commit by accident.
+
+- VLC: registry detection `VLC media player` (startsWith), silent `/L=1033 /S`, machine scope.
+- Git: registry detection `Git` (exact — verified against the installed entry),
+  silent `/VERYSILENT /NORESTART /SP-`, machine scope.
+
+Both pass catalog validation with 0 issues and were verified with **Simulate**
+(Git showed the exact command and `SHA-256: OK`).

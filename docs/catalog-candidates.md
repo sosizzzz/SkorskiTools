@@ -20,7 +20,7 @@ provided by the owner and verified with SHA-256 before it is added.
 | **Notepad++** | development | `/S /noUpdater` | user or machine | NSIS EXE | High — official manual documents `/S`, `/noUpdater` |
 | **Git for Windows** | development | `/VERYSILENT /NORESTART /SP-` | machine | Inno Setup EXE | High — gitforwindows.org documents these flags |
 | **Visual Studio Code** | development | `/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /mergetasks=!runcode` | user or machine | Inno Setup EXE | High — official VS Code docs document `/mergetasks=!runcode` |
-| **LibreOffice** | other | `/qn /norestart` **via `msiexec /i`** | machine | MSI | High — standard Windows Installer switches |
+| ~~**LibreOffice**~~ | other | — | — | MSI | **Excluded by the owner**: the 358 MB `.msi` exceeds GitHub's 100 MB file limit |
 
 Notes:
 
