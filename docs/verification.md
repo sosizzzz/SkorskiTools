@@ -7,7 +7,7 @@ Executed on Windows 11, .NET 10.0.404, non-elevated user session.
 | Check | Result |
 |---|---|
 | `dotnet build SkorskiTools.sln -c Debug` | 0 errors, 0 warnings |
-| `dotnet test SkorskiTools.sln -c Debug` | 53/53 passed |
+| `dotnet test SkorskiTools.sln -c Debug` | 54/54 passed |
 | Inno Setup compile (`ISCC.exe SkorskiTools.iss`) | Successful, 0 warnings |
 
 Unit test coverage includes: path safety, SHA-256, manifest schema/rules,
@@ -28,6 +28,8 @@ installer argument parsing, auxiliary copying and portable deployment.
 | Script copy button | Full code copied to clipboard |
 | Auxiliary Download button | 2 files copied and SHA-256 verified into the user folder |
 | Running as administrator | No (standard user session) |
+| Executable icon resource | `RT_GROUP_ICON` present in `SkorskiTools.App.exe` |
+| Portable desktop shortcut | Real `.lnk` created, `IconLocation` = shipped `SkorskiTools.ico`, and removed on uninstall |
 
 ## Distribution
 

@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets/app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SkorskiTools.Core\SkorskiTools.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Shipped beside the exe so generated shortcuts can reference the same icon. -->
+    <None Update="Assets/app.ico">
+      <Link>SkorskiTools.ico</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

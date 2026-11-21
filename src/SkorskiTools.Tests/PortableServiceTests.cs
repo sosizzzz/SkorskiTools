@@ -182,7 +182,12 @@ public sealed class PortableServiceTests
         public List<(string Path, string Target)> Created { get; } = new();
         public List<string> Deleted { get; } = new();
 
-        public void Create(string shortcutPath, string targetPath, string workingDirectory, string description) =>
+        public void Create(
+            string shortcutPath,
+            string targetPath,
+            string workingDirectory,
+            string description,
+            string? iconPath = null) =>
             Created.Add((shortcutPath, targetPath));
 
         public void Delete(string shortcutPath) => Deleted.Add(shortcutPath);

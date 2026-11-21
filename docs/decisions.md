@@ -170,3 +170,15 @@ requests elevation. No code signing is used in 1.0, so a SmartScreen warning is
 expected. Updates are manual.
 
 `Inno Setup 6.7.3` was installed per user to compile and verify the installer.
+
+### Application icon
+`Assets/app.ico` is set as `ApplicationIcon`, so it is embedded in `SkorskiTools.App.exe`.
+The same file is copied next to the executable as `SkorskiTools.ico` so generated
+portable shortcuts can point to it via `IconLocation`. Inno Setup icons inherit the
+executable's icon.
+
+`WScript.Shell` is a late-bound COM object: its properties must be set with
+`Type.InvokeMember(BindingFlags.SetProperty, ...)`. Using `GetProperty().SetValue()`
+silently created no shortcut at all. This was found and fixed after a real
+end-to-end deployment check; a unit test now verifies that the `.lnk` file exists
+and carries the requested icon.
