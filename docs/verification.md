@@ -36,7 +36,7 @@ installer argument parsing, auxiliary copying and portable deployment.
 | Detail panel | Selecting Flow Launcher showed id, file, hash prefix, detection state and manifest path |
 | New resources | VLC, Git and Brave loaded with 0 issues; Git detected as installed 2.56.1; Simulate showed its command and valid hash |
 | Highlights | Selecting Brave showed exactly three benefits in the detail panel |
-| Eligible checkboxes | 4 in Applications, 2 in Browsers (Chrome) and 2 in Portables |
+| Eligible checkboxes | Clear rounded checkboxes; Office disabled with tooltip, Firefox disabled in Browsers |
 | Blocked checkbox | Firefox disabled with tooltip explaining the Mozilla stub limitation |
 | Simulate button | Hidden unless both Full Auto and Developer mode are on; showed exact commands and `SHA-256: OK` for 4 applications without starting any installer |
 | Executable icon resource | `RT_GROUP_ICON` present in `SkorskiTools.App.exe` |

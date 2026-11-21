@@ -7,6 +7,45 @@
     <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     <converters:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibility" />
 
+    <!-- Clear, compact selection checkbox used by Full install. -->
+    <Style x:Key="FullAutoCheckBoxStyle" TargetType="CheckBox">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Border x:Name="Box" Width="22" Height="22" CornerRadius="4"
+                            Background="#0FFFFFFF" BorderBrush="#9FFFFFFF" BorderThickness="1.5">
+                        <Path x:Name="Tick" Data="M1,5 L4.5,8.5 L10,2"
+                              Stroke="White" StrokeThickness="2"
+                              Stretch="Uniform" Margin="3"
+                              Visibility="Collapsed" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Box" Property="Background"
+                                    Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                            <Setter TargetName="Box" Property="BorderBrush"
+                                    Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                            <Setter TargetName="Tick" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Box" Property="BorderBrush" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Box" Property="Opacity" Value="0.35" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Shared typography for section pages. -->
     <Style x:Key="PageTitleStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="22" />
@@ -125,8 +164,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"
-                          Width="18" Height="18" MinWidth="0" Padding="0" Margin="0"
+                <CheckBox Grid.Column="0" Style="{StaticResource FullAutoCheckBoxStyle}"
                           IsChecked="{Binding IsSelected}"
                           IsEnabled="{Binding CanSelectForFullAuto}"
                           ToolTip="{Binding SelectionTooltip}"

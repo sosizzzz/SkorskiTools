@@ -14,6 +14,11 @@ public sealed class ResourceCatalogServiceTests
         Assert.Equal(3, result.Browsers.Count);
         Assert.All(result.Applications, a => Assert.Equal(3, a.Highlights.Count));
         Assert.All(result.Browsers, b => Assert.Equal(3, b.Highlights.Count));
+
+        var office = result.Applications.Single(a => a.Id == "office");
+        Assert.NotNull(office.FullAuto);
+        Assert.False(office.FullAuto!.Supported);
+        Assert.False(string.IsNullOrWhiteSpace(office.FullAuto.UnsupportedReason));
         Assert.Equal(2, result.Portables.Count);
         Assert.Single(result.Auxiliary);
         Assert.Equal(2, result.Scripts.Count);

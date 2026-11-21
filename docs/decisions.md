@@ -265,6 +265,10 @@ If a candidate is discarded, its staged file is deleted as well. The folder stay
 empty between deliveries. This avoids keeping duplicate copies of large installers.
 
 - VLC: registry detection `VLC media player` (startsWith), silent `/L=1033 /S`, machine scope.
+- Office is explicitly **not eligible** for Full install: its ODT setup downloads Office
+  files and is not a self-contained silent installer. Its checkbox is disabled with a
+  tooltip explaining that the limitation comes from Microsoft's installer. Firefox is
+  blocked for the same reason (stub installer).
 - Git: registry detection `Git` (exact — verified against the installed entry),
   silent `/VERYSILENT /NORESTART /SP-`, machine scope.
 
