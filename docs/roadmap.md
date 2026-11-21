@@ -1,8 +1,84 @@
-# Roadmap — next cycle: Skorski's Config (Firefox)
+# Roadmap — post-1.0 features
 
-This document proposes the first post-1.0 feature. It is a plan only: no code is
-changed until the owner provides the `user.js` file. The decisions below are already
-confirmed by the owner.
+The owner decided to implement **Full Auto** first. Skorski's Config (Firefox) is
+deferred until a clean `user.js` is available; its plan is kept below unchanged.
+
+## Current cycle: Full Auto
+
+### Design goal
+
+A single, generic engine with **no application names in C#**. Installing a new
+program must require only a new `manifest.json`, as required by the fundamental
+project rule. Manual installation stays the default and is never changed by Full Auto.
+
+### Manifest contract
+
+Full Auto is described by an optional `fullAuto` object in the application/browser
+manifest. It is independent of the manual `installation` block:
+
+```json
+"fullAuto": {
+  "enabled": true,
+  "installArguments": ["/VERYSILENT", "/NORESTART"],
+  "expectedExitCodes": [0],
+  "restartExitCodes": [3010, 1641],
+  "uninstall": {
+    "useQuietUninstallString": true,
+    "arguments": []
+  }
+}
+```
+
+Rules:
+
+- `enabled` defaults to `false`.
+- A manifest with `enabled: true` and no `installArguments` is **invalid**: Skorski
+  Tools must not guess a vendor's silent switches.
+- `expectedExitCodes` defaults to `[0]`; `restartExitCodes` defaults to `[3010, 1641]`.
+- Arguments are always arrays, never concatenated strings.
+- Uninstall uses only registry data matched during detection. `useQuietUninstallString`
+  prefers `QuietUninstallString` over `UninstallString`.
+- Reinstall never happens silently: the whole batch is confirmed first, naming every
+  affected application.
+
+### Engine
+
+`FullAutoService` (Core, injectable and unit-tested):
+
+1. `BuildPlanAsync` reuses `IInstallationDetector` for every item.
+2. Not-installed + eligible → **Install**. Installed + eligible → **Reinstall**.
+   Ineligible items are skipped with a reason in the plan.
+3. `ExecuteAsync` verifies SHA-256 again, runs the original installer with the
+   configured argument list, waits for it, checks exit codes, re-runs detection and
+   reports progress.
+4. Only `expectedExitCodes` count as success; `restartExitCodes` are reported as
+   "needs restart", not as silent failures.
+
+### UI and settings
+
+- The *Full Auto* switch in Settings becomes usable and persists to
+  `%USERPROFILE%\Skorski-Tools\settings.json`. It is off by default.
+- Applications and Browsers get a **Full Auto** button, visible only while the switch
+  is on. It shows a confirmation listing every planned action before running.
+- Manual Install/Uninstall/Reinstall buttons remain unchanged.
+
+### Acceptance criteria
+
+- Adding a new installer with a valid `fullAuto` block requires no code change.
+- No full-auto capability for a manifest without verified silent arguments.
+- No destructive action without an explicit, named confirmation.
+- All process arguments are passed as lists, never concatenated.
+- Core logic is covered by unit tests with fake detector/installer.
+
+### Known limitation
+
+The owner must provide the actual silent switches for each installer. Skorski Tools
+will not guess them or reverse-engineer the executables, so until those manifests are
+updated, the engine will report those resources as not eligible.
+
+---
+
+## Deferred cycle: Skorski's Config (Firefox)
 
 ## Goal
 
