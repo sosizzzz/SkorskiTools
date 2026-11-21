@@ -4,4 +4,6 @@ namespace SkorskiTools.Core.Models;
 public sealed class AppSettings
 {
     public bool FullAutoEnabled { get; set; }
+
+    public bool DeveloperModeEnabled { get; set; }
 }

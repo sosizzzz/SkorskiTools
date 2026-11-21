@@ -13,11 +13,19 @@ public sealed partial class SettingsViewModel : ViewModelBase
     [ObservableProperty]
     private bool _fullAutoEnabled;
 
+    [ObservableProperty]
+    private bool _developerModeEnabled;
+
     public SettingsViewModel(ISettingsService settings)
     {
         _settings = settings;
         _fullAutoEnabled = settings.Current.FullAutoEnabled;
-        settings.SettingsChanged += (_, _) => FullAutoEnabled = settings.Current.FullAutoEnabled;
+        _developerModeEnabled = settings.Current.DeveloperModeEnabled;
+        settings.SettingsChanged += (_, _) =>
+        {
+            FullAutoEnabled = settings.Current.FullAutoEnabled;
+            DeveloperModeEnabled = settings.Current.DeveloperModeEnabled;
+        };
     }
 
     public override string Title => "Settings";
@@ -50,4 +58,7 @@ public sealed partial class SettingsViewModel : ViewModelBase
         _settings.SetFullAutoEnabled(value);
         OnPropertyChanged(nameof(FullAutoStatus));
     }
+
+    partial void OnDeveloperModeEnabledChanged(bool value) =>
+        _settings.SetDeveloperModeEnabled(value);
 }

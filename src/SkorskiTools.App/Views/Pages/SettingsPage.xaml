@@ -87,6 +87,24 @@
                     </StackPanel>
                 </Grid>
             </Border>
+
+            <Border Style="{StaticResource InfoPanelStyle}" Margin="0,14,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Developer mode" FontSize="16" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        <TextBlock FontSize="12" Margin="0,6,0,0" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                   Text="Reveals diagnostic tools such as the Full install simulation. Intended for testing; leave it off for normal use." />
+                    </StackPanel>
+                    <ui:ToggleSwitch Grid.Column="1" AutomationProperties.Name="Developer mode toggle"
+                                     IsChecked="{Binding DeveloperModeEnabled}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

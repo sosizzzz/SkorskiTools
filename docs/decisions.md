@@ -228,3 +228,11 @@ same plan, resolves the real paths, verifies hashes and prints the exact command
 (`installer.exe <args>`), scope and UAC expectation, but never starts a process.
 This proves the manifest configuration without touching the machine. It cannot prove
 a vendor's silent switch works; that still requires an isolated test environment.
+
+The owner asked for *Simulate* to be hidden behind a **Developer mode** switch in
+Settings, so normal users never see diagnostic tools. It is off by default and
+persisted in `settings.json` alongside `fullAutoEnabled`; future developer tools can
+reuse the same flag. The button requires both Full Auto and Developer mode to be on.
+
+Full Auto development is **parked** at this point: the feature is functional, tested
+and documented, but no further work is planned until the owner asks for it.

@@ -13,6 +13,8 @@ public interface ISettingsService
     event EventHandler? SettingsChanged;
 
     void SetFullAutoEnabled(bool enabled);
+
+    void SetDeveloperModeEnabled(bool enabled);
 }
 
 /// <summary>Persists settings as JSON in %USERPROFILE%\Skorski-Tools\settings.json.</summary>
@@ -47,6 +49,17 @@ public sealed class SettingsService : ISettingsService
         Save();
         SettingsChanged?.Invoke(this, EventArgs.Empty);
         _logger.Information("Full Auto setting changed to {Enabled}", enabled);
+    }
+
+    public void SetDeveloperModeEnabled(bool enabled)
+    {
+        if (Current.DeveloperModeEnabled == enabled)
+            return;
+
+        Current.DeveloperModeEnabled = enabled;
+        Save();
+        SettingsChanged?.Invoke(this, EventArgs.Empty);
+        _logger.Information("Developer mode changed to {Enabled}", enabled);
     }
 
     private AppSettings Load()

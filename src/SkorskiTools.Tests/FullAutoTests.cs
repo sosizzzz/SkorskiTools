@@ -226,6 +226,27 @@ public sealed class FullAutoTests
         }
     }
 
+    [Fact]
+    public void SettingsService_PersistsDeveloperModeFlag()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "skorski-devmode-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var service = new SettingsService(root);
+            Assert.False(service.Current.DeveloperModeEnabled);
+
+            service.SetDeveloperModeEnabled(true);
+
+            Assert.True(service.Current.DeveloperModeEnabled);
+            Assert.True(new SettingsService(root).Current.DeveloperModeEnabled);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+                Directory.Delete(root, recursive: true);
+        }
+    }
+
     private static ApplicationManifest Manifest(string id, bool enabled) => new()
     {
         SchemaVersion = 1,

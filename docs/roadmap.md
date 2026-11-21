@@ -3,7 +3,7 @@
 The owner decided to implement **Full Auto** first. Skorski's Config (Firefox) is
 deferred until a clean `user.js` is available; its plan is kept below unchanged.
 
-## Current cycle: Full Auto
+## Parked cycle: Full Auto (implemented, not under active development)
 
 ### Design goal
 

@@ -28,6 +28,12 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
     private bool _isFullAutoEnabled;
 
     [ObservableProperty]
+    private bool _isDeveloperModeEnabled;
+
+    [ObservableProperty]
+    private bool _canSimulate;
+
+    [ObservableProperty]
     private bool _isFullAutoRunning;
 
     [ObservableProperty]
@@ -65,8 +71,21 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
         _settings = settings;
 
         _isFullAutoEnabled = settings.Current.FullAutoEnabled;
-        settings.SettingsChanged += (_, _) => IsFullAutoEnabled = settings.Current.FullAutoEnabled;
+        _isDeveloperModeEnabled = settings.Current.DeveloperModeEnabled;
+        settings.SettingsChanged += (_, _) =>
+        {
+            IsFullAutoEnabled = settings.Current.FullAutoEnabled;
+            IsDeveloperModeEnabled = settings.Current.DeveloperModeEnabled;
+        };
+
+        UpdateCanSimulate();
     }
+
+    partial void OnIsFullAutoEnabledChanged(bool value) => UpdateCanSimulate();
+
+    partial void OnIsDeveloperModeEnabledChanged(bool value) => UpdateCanSimulate();
+
+    private void UpdateCanSimulate() => CanSimulate = IsFullAutoEnabled && IsDeveloperModeEnabled;
 
     partial void OnFullAutoProgressChanged(int value) => UpdateProgressText();
 
@@ -271,7 +290,7 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
     [RelayCommand]
     private async Task SimulateAsync()
     {
-        if (_busy || !IsFullAutoEnabled)
+        if (_busy || !CanSimulate)
             return;
 
         var selected = Items.Where(i => i.IsSelected && i.Manifest is ApplicationManifest).ToList();
