@@ -18,6 +18,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Text="Selected resource" Grid.ColumnSpan="3" FontSize="13" FontWeight="SemiBold"
@@ -52,6 +53,12 @@
             <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SelectedItem.ManifestPath}" FontSize="10"
                        TextWrapping="Wrap" HorizontalAlignment="Right"
                        Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+            <TextBlock Grid.Row="4" Text="Why it's useful" Style="{StaticResource SidebarLabelStyle}" VerticalAlignment="Top" />
+            <TextBlock Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+                       Text="{Binding SelectedItem.HighlightsText}" FontSize="12"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         </Grid>
     </Border>
 </UserControl>

@@ -19,7 +19,7 @@ installer argument parsing, auxiliary copying and portable deployment.
 | Check | Result |
 |---|---|
 | Published app starts from its own folder | Yes, title "Skorski Tools" |
-| Catalog discovered from published `resources/` | 6 applications, 2 browsers, 2 portables, 1 auxiliary, 2 scripts |
+| Catalog discovered from published `resources/` | 6 applications, 3 browsers, 2 portables, 1 auxiliary, 2 scripts |
 | Catalog issues | 0 |
 | Navigation across all 7 sections | All responded, no crash, content visible |
 | Initial detection | Applications 2/4, Browsers 1/2, Portables 0/2 |
@@ -34,7 +34,8 @@ installer argument parsing, auxiliary copying and portable deployment.
 | Empty selection | Shows "Select at least one ... first" banner |
 | History page | Opens with "No operations recorded yet"; persistence covered by unit tests |
 | Detail panel | Selecting Flow Launcher showed id, file, hash prefix, detection state and manifest path |
-| New resources | VLC and Git loaded with 0 issues; Git detected as installed 2.56.1; Simulate showed its command and valid hash |
+| New resources | VLC, Git and Brave loaded with 0 issues; Git detected as installed 2.56.1; Simulate showed its command and valid hash |
+| Highlights | Selecting Brave showed exactly three benefits in the detail panel |
 | Eligible checkboxes | 4 in Applications, 2 in Browsers (Chrome) and 2 in Portables |
 | Blocked checkbox | Firefox disabled with tooltip explaining the Mozilla stub limitation |
 | Simulate button | Hidden unless both Full Auto and Developer mode are on; showed exact commands and `SHA-256: OK` for 4 applications without starting any installer |

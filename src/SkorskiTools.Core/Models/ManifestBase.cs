@@ -11,6 +11,9 @@ public abstract class ManifestBase
     public string Category { get; init; } = "other";
     public string Icon { get; init; } = string.Empty;
 
+    /// <summary>Three short benefits shown in the detail panel.</summary>
+    public IReadOnlyList<string> Highlights { get; init; } = Array.Empty<string>();
+
     /// <summary>Absolute path of the manifest.json file.</summary>
     public string ManifestPath { get; init; } = string.Empty;
 

@@ -1,25 +1,43 @@
-{
-  "schemaVersion": 1,
-  "id": "office",
-  "name": "Microsoft Office",
-  "description": "Office setup provided by the owner.",
-  "version": "",
-  "category": "other",
-  "files": [
-    { "file": "OfficeSetup.exe", "sha256": "bd89bf2b53d45f433644e419049f3ed6e5ead8aa0915c8d41df27585e8dc5b61", "arch": "any" }
-  ],
-  "detection": {
-    "type": "registry",
-    "displayName": "Microsoft Office",
-    "matchMode": "startsWith"
-  },
-  "installation": { "arguments": [] },
-  "uninstallation": { "mode": "registered-uninstaller" },
-  "fullAuto": {
-    "enabled": true,
-    "scope": "machine",
-    "installArguments": ["/configure", "configuration.xml"],
-    "configurationFile": "configuration.xml",
-    "configurationSha256": "b51a2e3eff2cb40962ba62ac5717d807a48b31e5db79f09cbd4b314e6943211b"
-  }
+﻿{
+    "schemaVersion":  1,
+    "id":  "office",
+    "name":  "Microsoft Office",
+    "description":  "Office setup provided by the owner.",
+    "version":  "",
+    "category":  "other",
+    "files":  [
+                  {
+                      "file":  "OfficeSetup.exe",
+                      "sha256":  "bd89bf2b53d45f433644e419049f3ed6e5ead8aa0915c8d41df27585e8dc5b61",
+                      "arch":  "any"
+                  }
+              ],
+    "detection":  {
+                      "type":  "registry",
+                      "displayName":  "Microsoft Office",
+                      "matchMode":  "startsWith"
+                  },
+    "installation":  {
+                         "arguments":  [
+
+                                       ]
+                     },
+    "uninstallation":  {
+                           "mode":  "registered-uninstaller"
+                       },
+    "fullAuto":  {
+                     "enabled":  true,
+                     "scope":  "machine",
+                     "installArguments":  [
+                                              "/configure",
+                                              "configuration.xml"
+                                          ],
+                     "configurationFile":  "configuration.xml",
+                     "configurationSha256":  "b51a2e3eff2cb40962ba62ac5717d807a48b31e5db79f09cbd4b314e6943211b"
+                 },
+    "highlights":  [
+                       "Word, Excel and PowerPoint in one suite",
+                       "Familiar tools for documents and spreadsheets",
+                       "Updates through the Microsoft 365 channel"
+                   ]
 }

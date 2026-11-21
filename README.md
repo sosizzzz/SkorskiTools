@@ -87,7 +87,9 @@ else needs to be installed.
   normal behavior. Installers that cannot run unattended (currently the Firefox stub)
   show a disabled checkbox with an explanatory tooltip.
 - **Browsers** — a separate section that reuses the exact same application logic.
-  Firefox and Chrome are included out of the box.
+  Firefox, Chrome and Brave are included out of the box.
+- **Resource details** — selecting an application or browser shows three practical
+  benefits stored in its manifest, plus files, hashes and detection source.
 - **Portables** — deployed atomically into the user profile, with a desktop shortcut
   to the real executable. Removal warns about data loss and deletes only that
   portable's own folder. Nothing is downloaded from the internet.

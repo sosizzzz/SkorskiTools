@@ -34,7 +34,13 @@
         "productCode": { "type": "string" }
       }
     },
-    "fullAuto": { "$ref": "#/$defs/fullAuto" }
+    "fullAuto": { "$ref": "#/$defs/fullAuto" },
+    "highlights": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "string", "minLength": 1 }
+    }
   },
   "$defs": {
     "file": {

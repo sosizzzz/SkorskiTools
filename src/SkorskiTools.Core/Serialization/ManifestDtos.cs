@@ -10,6 +10,7 @@ internal sealed class ManifestDto
     public string Version { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
+    public List<string>? Highlights { get; set; }
     public List<ManifestFileDto>? Files { get; set; }
     public DetectionDto? Detection { get; set; }
     public InstallationDto? Installation { get; set; }

@@ -11,7 +11,9 @@ public sealed class ResourceCatalogServiceTests
         var result = await new ResourceCatalogService().LoadAsync(TestData.ResourcesDirectory);
 
         Assert.Equal(6, result.Applications.Count);
-        Assert.Equal(2, result.Browsers.Count);
+        Assert.Equal(3, result.Browsers.Count);
+        Assert.All(result.Applications, a => Assert.Equal(3, a.Highlights.Count));
+        Assert.All(result.Browsers, b => Assert.Equal(3, b.Highlights.Count));
         Assert.Equal(2, result.Portables.Count);
         Assert.Single(result.Auxiliary);
         Assert.Equal(2, result.Scripts.Count);

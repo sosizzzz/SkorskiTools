@@ -1,23 +1,41 @@
-{
-  "schemaVersion": 1,
-  "id": "chrome",
-  "name": "Google Chrome",
-  "description": "Web browser.",
-  "version": "",
-  "category": "networking",
-  "files": [
-    { "file": "ChromeSetup.exe", "sha256": "1a6a2a7c9dae29e1a6859ee5b73caa485d97ca8ece90306bb71a15556da0402c", "arch": "any" }
-  ],
-  "detection": {
-    "type": "registry",
-    "displayName": "Google Chrome",
-    "matchMode": "exact"
-  },
-  "installation": { "arguments": [] },
-  "uninstallation": { "mode": "registered-uninstaller" },
-  "fullAuto": {
-    "enabled": true,
-    "scope": "user",
-    "installArguments": ["/silent", "/install"]
-  }
+﻿{
+    "schemaVersion":  1,
+    "id":  "chrome",
+    "name":  "Google Chrome",
+    "description":  "Web browser.",
+    "version":  "",
+    "category":  "networking",
+    "files":  [
+                  {
+                      "file":  "ChromeSetup.exe",
+                      "sha256":  "1a6a2a7c9dae29e1a6859ee5b73caa485d97ca8ece90306bb71a15556da0402c",
+                      "arch":  "any"
+                  }
+              ],
+    "detection":  {
+                      "type":  "registry",
+                      "displayName":  "Google Chrome",
+                      "matchMode":  "exact"
+                  },
+    "installation":  {
+                         "arguments":  [
+
+                                       ]
+                     },
+    "uninstallation":  {
+                           "mode":  "registered-uninstaller"
+                       },
+    "fullAuto":  {
+                     "enabled":  true,
+                     "scope":  "user",
+                     "installArguments":  [
+                                              "/silent",
+                                              "/install"
+                                          ]
+                 },
+    "highlights":  [
+                       "Fast page rendering",
+                       "Large extension ecosystem",
+                       "Sync with your Google account"
+                   ]
 }

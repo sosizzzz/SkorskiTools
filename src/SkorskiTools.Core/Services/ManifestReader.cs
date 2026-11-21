@@ -96,6 +96,7 @@ public sealed partial class ManifestReader
         var detection = ValidateDetection(dto.Detection, errors);
         var uninstallation = ValidateUninstallation(dto.Uninstallation, errors);
         var fullAuto = ValidateFullAuto(dto.FullAuto, resourceDirectory, errors);
+        var highlights = ValidateHighlights(dto, errors);
         var arguments = dto.Installation?.Arguments ?? new List<string>();
 
         if (arguments.Any(string.IsNullOrWhiteSpace))
@@ -120,7 +121,8 @@ public sealed partial class ManifestReader
             Detection = detection,
             Installation = new InstallationConfig { Arguments = arguments.ToArray() },
             Uninstallation = uninstallation,
-            FullAuto = fullAuto
+            FullAuto = fullAuto,
+            Highlights = highlights
         });
     }
 
@@ -313,6 +315,19 @@ public sealed partial class ManifestReader
             Path = dto.Path,
             Executable = dto.Executable
         };
+    }
+
+    private static IReadOnlyList<string> ValidateHighlights(ManifestDto dto, List<string> errors)
+    {
+        var highlights = dto.Highlights ?? new List<string>();
+
+        if (highlights.Count > 0 && highlights.Count != 3)
+            errors.Add("highlights must contain exactly 3 items when present");
+
+        if (highlights.Any(string.IsNullOrWhiteSpace))
+            errors.Add("highlights must not contain empty values");
+
+        return highlights.ToArray();
     }
 
     private static FullAutoConfig? ValidateFullAuto(

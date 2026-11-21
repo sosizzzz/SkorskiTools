@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "brave",
+  "name": "Brave Browser",
+  "description": "Chromium browser with privacy features built in.",
+  "version": "",
+  "category": "networking",
+  "highlights": [
+    "Built-in ad and tracker blocker",
+    "Fast Chromium-based browsing",
+    "Private search and optional rewards"
+  ],
+  "files": [
+    { "file": "BraveBrowserSetup-BRV010.exe", "sha256": "d3e49ac4e4966061bb9fcf8398719241c2c743839f2855789ce38d33dedf883b", "arch": "x64" }
+  ],
+  "detection": {
+    "type": "registry",
+    "displayName": "Brave",
+    "matchMode": "startsWith"
+  },
+  "installation": { "arguments": [] },
+  "uninstallation": { "mode": "registered-uninstaller" },
+  "fullAuto": {
+    "enabled": true,
+    "scope": "machine",
+    "installArguments": ["--install", "--silent", "--system-level"]
+  }
+}

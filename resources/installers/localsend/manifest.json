@@ -1,23 +1,42 @@
-{
-  "schemaVersion": 1,
-  "id": "localsend",
-  "name": "LocalSend",
-  "description": "Cross-platform file sharing over the local network.",
-  "version": "1.18.2",
-  "category": "networking",
-  "files": [
-    { "file": "LocalSend-1.18.2-windows-x86-64.exe", "sha256": "122783e6abb4b0a1f1603d896f46a03aeda3004479ebd3175cab4ddac6b60919", "arch": "x64" }
-  ],
-  "detection": {
-    "type": "registry",
-    "displayName": "LocalSend",
-    "matchMode": "startsWith"
-  },
-  "installation": { "arguments": [] },
-  "uninstallation": { "mode": "registered-uninstaller" },
-  "fullAuto": {
-    "enabled": true,
-    "scope": "user",
-    "installArguments": ["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART"]
-  }
+﻿{
+    "schemaVersion":  1,
+    "id":  "localsend",
+    "name":  "LocalSend",
+    "description":  "Cross-platform file sharing over the local network.",
+    "version":  "1.18.2",
+    "category":  "networking",
+    "files":  [
+                  {
+                      "file":  "LocalSend-1.18.2-windows-x86-64.exe",
+                      "sha256":  "122783e6abb4b0a1f1603d896f46a03aeda3004479ebd3175cab4ddac6b60919",
+                      "arch":  "x64"
+                  }
+              ],
+    "detection":  {
+                      "type":  "registry",
+                      "displayName":  "LocalSend",
+                      "matchMode":  "startsWith"
+                  },
+    "installation":  {
+                         "arguments":  [
+
+                                       ]
+                     },
+    "uninstallation":  {
+                           "mode":  "registered-uninstaller"
+                       },
+    "fullAuto":  {
+                     "enabled":  true,
+                     "scope":  "user",
+                     "installArguments":  [
+                                              "/VERYSILENT",
+                                              "/SUPPRESSMSGBOXES",
+                                              "/NORESTART"
+                                          ]
+                 },
+    "highlights":  [
+                       "No cloud or account required",
+                       "Cross-platform local transfers",
+                       "Encrypted peer-to-peer file sharing"
+                   ]
 }

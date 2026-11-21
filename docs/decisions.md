@@ -270,3 +270,14 @@ empty between deliveries. This avoids keeping duplicate copies of large installe
 
 Both pass catalog validation with 0 issues and were verified with **Simulate**
 (Git showed the exact command and `SHA-256: OK`).
+
+## Brave and resource highlights
+
+The owner staged a Brave installer (`BraveBrowserSetup-BRV010.exe`) and it was added as
+a third browser. Its silent switches are `--install --silent --system-level`, the
+documented flags for Brave's tagged meta installer, with machine scope.
+
+A `highlights` field was added to application/browser manifests and validated to
+contain exactly three strings when present. The detail panel shows them under
+*Why it's useful*. This keeps the three pros as catalog data, so adding a resource
+still requires no code changes. All applications and browsers now carry three highlights.

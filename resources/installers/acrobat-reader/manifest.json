@@ -1,23 +1,44 @@
-{
-  "schemaVersion": 1,
-  "id": "acrobat-reader",
-  "name": "Adobe Acrobat Reader",
-  "description": "PDF reader (Spanish installer).",
-  "version": "",
-  "category": "utilities",
-  "files": [
-    { "file": "Reader_es_install.exe", "sha256": "d5d81c218bccee321094b404826470e356680a27364f0d9e4d854bdc747e6577", "arch": "any" }
-  ],
-  "detection": {
-    "type": "registry",
-    "displayName": "Adobe Acrobat Reader",
-    "matchMode": "startsWith"
-  },
-  "installation": { "arguments": [] },
-  "uninstallation": { "mode": "registered-uninstaller" },
-  "fullAuto": {
-    "enabled": true,
-    "scope": "machine",
-    "installArguments": ["/sAll", "/rs", "/rps", "/msi", "EULA_ACCEPT=YES"]
-  }
+﻿{
+    "schemaVersion":  1,
+    "id":  "acrobat-reader",
+    "name":  "Adobe Acrobat Reader",
+    "description":  "PDF reader (Spanish installer).",
+    "version":  "",
+    "category":  "utilities",
+    "files":  [
+                  {
+                      "file":  "Reader_es_install.exe",
+                      "sha256":  "d5d81c218bccee321094b404826470e356680a27364f0d9e4d854bdc747e6577",
+                      "arch":  "any"
+                  }
+              ],
+    "detection":  {
+                      "type":  "registry",
+                      "displayName":  "Adobe Acrobat Reader",
+                      "matchMode":  "startsWith"
+                  },
+    "installation":  {
+                         "arguments":  [
+
+                                       ]
+                     },
+    "uninstallation":  {
+                           "mode":  "registered-uninstaller"
+                       },
+    "fullAuto":  {
+                     "enabled":  true,
+                     "scope":  "machine",
+                     "installArguments":  [
+                                              "/sAll",
+                                              "/rs",
+                                              "/rps",
+                                              "/msi",
+                                              "EULA_ACCEPT=YES"
+                                          ]
+                 },
+    "highlights":  [
+                       "Reliable PDF viewing and printing",
+                       "Fill and sign PDF forms",
+                       "Wide compatibility with PDF files"
+                   ]
 }
