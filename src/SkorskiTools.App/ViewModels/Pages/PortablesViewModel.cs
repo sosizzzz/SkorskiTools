@@ -9,8 +9,9 @@ public sealed class PortablesViewModel : PortableListViewModel
         IPortableService portables,
         IConfirmationService confirmation,
         IFullInstallRunner fullInstall,
-        ISettingsService settings)
-        : base(portables, confirmation, fullInstall, settings)
+        ISettingsService settings,
+        IOperationHistoryService history)
+        : base(portables, confirmation, fullInstall, settings, history)
     {
     }
 

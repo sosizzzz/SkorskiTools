@@ -17,8 +17,8 @@ Nothing here is implemented unless the owner chooses it in a later cycle.
 
 | Idea | Value | Cost | Notes |
 |---|---|---|---|
-| **In-app operation history** | High | Low–Medium | Store install/uninstall/reinstall/simulation results in a small JSON log under the user folder and show a timeline. Logs already exist on disk; exposing them read-only is cheap. |
-| **Resource detail panel** | High | Low | When an item is selected, show files, hashes, detection source, installed version, category and manifest path. Reuses data already loaded. |
+| **In-app operation history** — done | High | Low–Medium | `History` page reads `operation-history.json` with up to 200 results. Manual and full-install actions append entries. |
+| **Resource detail panel** — done | High | Low | Shared control shows files, hashes, detection source, installed version, category and manifest path. |
 | **Developer: manifest doctor** | High (portfolio) | Medium | Validate every manifest, recompute hashes, list issues with path and line, and export a report. Great for demonstrating the validation design. |
 | **Dashboard summary with last detection** | Medium | Low | Show counts, last detection time and catalog issues at a glance. |
 | **Log viewer (developer mode)** | Medium | Low | Read the Serilog files from the app, with filters by level. No external dependency needed. |

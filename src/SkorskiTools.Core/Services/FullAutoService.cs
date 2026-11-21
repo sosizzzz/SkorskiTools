@@ -25,17 +25,20 @@ public sealed class FullAutoService : IFullAutoService
     private readonly IInstallationDetector _detector;
     private readonly IApplicationInstaller _installer;
     private readonly IPortableService _portables;
+    private readonly IOperationHistoryService? _history;
     private readonly ILogger _logger;
 
     public FullAutoService(
         IInstallationDetector detector,
         IApplicationInstaller installer,
         IPortableService? portables = null,
+        IOperationHistoryService? history = null,
         ILogger? logger = null)
     {
         _detector = detector;
         _installer = installer;
         _portables = portables ?? new PortableService();
+        _history = history;
         _logger = logger ?? Log.Logger;
     }
 
@@ -137,6 +140,19 @@ public sealed class FullAutoService : IFullAutoService
                 messages.Add($"{name}: installed successfully");
                 _logger.Information("Full install finished for {Id}", item.Manifest.Id);
             }
+
+            _history?.Add(new OperationHistoryEntry
+            {
+                Timestamp = DateTimeOffset.Now,
+                ResourceId = item.Manifest.Id,
+                ResourceName = name,
+                Action = item.Action.ToString(),
+                Success = outcome.Success && !outcome.RestartRequired,
+                Message = outcome.Message,
+                ExitCode = item.Manifest is ApplicationManifest
+                    ? outcome.RestartRequired ? 3010 : 0
+                    : null
+            });
         }
 
         var result = new FullAutoResult

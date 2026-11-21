@@ -240,3 +240,14 @@ and documented, but no further work is planned until the owner asks for it.
 One generic improvement was made while analysing future candidates: MSI packages are
 now launched through `msiexec.exe /i <path> <arguments>`. This was required to make
 LibreOffice (and other MSI apps) installable later without touching the engine again.
+
+## Detail panel and operation history
+
+A shared `ResourceDetailsControl` shows the selected resource's id, category, status,
+detected version, detection source, file hashes and manifest path in Applications,
+Browsers, Portables and Auxiliary. Scripts keep their code pane.
+
+`OperationHistoryService` stores up to 200 results in
+`%USERPROFILE%\Skorski-Tools\operation-history.json`. Manual and full-install actions
+append entries; the History page is read-only except for an explicit **Clear history**
+button. This complements the Serilog files without exposing raw logs to normal users.

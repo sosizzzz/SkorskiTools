@@ -18,6 +18,7 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
     private readonly IConfirmationService _confirmation;
     private readonly IFullInstallRunner _fullInstall;
     private readonly ISettingsService _settings;
+    private readonly IOperationHistoryService _history;
 
     private bool _busy;
 
@@ -62,13 +63,15 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
         IApplicationInstaller installer,
         IConfirmationService confirmation,
         IFullInstallRunner fullInstall,
-        ISettingsService settings)
+        ISettingsService settings,
+        IOperationHistoryService history)
     {
         _detector = detector;
         _installer = installer;
         _confirmation = confirmation;
         _fullInstall = fullInstall;
         _settings = settings;
+        _history = history;
 
         _isFullAutoEnabled = settings.Current.FullAutoEnabled;
         _isDeveloperModeEnabled = settings.Current.DeveloperModeEnabled;
@@ -151,6 +154,7 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
         try
         {
             var result = await _installer.InstallAsync(manifest).ConfigureAwait(true);
+            Record(item, "Install", result);
             if (!result.Success)
             {
                 _confirmation.ShowError("Installation failed", result.Message);
@@ -183,6 +187,7 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
         {
             var detection = await _detector.DetectAsync(manifest).ConfigureAwait(true);
             var result = await _installer.UninstallAsync(manifest, detection).ConfigureAwait(true);
+            Record(item, "Uninstall", result);
 
             if (!result.Success)
             {
@@ -216,6 +221,7 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
         try
         {
             var result = await _installer.InstallAsync(manifest).ConfigureAwait(true);
+            Record(item, "Reinstall", result);
             if (!result.Success)
             {
                 _confirmation.ShowError("Reinstall failed", result.Message);
@@ -319,6 +325,18 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
         ShowFullInstallResult(preview.AllHashesValid, string.Join(Environment.NewLine, text));
         DetectionSummary = "Simulation ready.";
     }
+
+    private void Record(ResourceItemViewModel item, string action, OperationResult result) =>
+        _history.Add(new OperationHistoryEntry
+        {
+            Timestamp = DateTimeOffset.Now,
+            ResourceId = item.Id,
+            ResourceName = item.Title,
+            Action = action,
+            Success = result.Success,
+            Message = result.Message,
+            ExitCode = result.ExitCode
+        });
 
     private void ShowFullInstallResult(bool ok, string message)
     {

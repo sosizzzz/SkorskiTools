@@ -21,6 +21,7 @@ public sealed partial class MainViewModel : ViewModelBase
     private readonly PortablesViewModel _portables;
     private readonly AuxiliaryViewModel _auxiliary;
     private readonly ScriptsViewModel _scripts;
+    private readonly HistoryViewModel _historyPage;
 
     public override string Title => "Skorski Tools";
 
@@ -49,7 +50,8 @@ public sealed partial class MainViewModel : ViewModelBase
         IPortableService? portables = null,
         IAuxiliaryService? auxiliary = null,
         IConfirmationService? confirmation = null,
-        ISettingsService? settings = null)
+        ISettingsService? settings = null,
+        IOperationHistoryService? history = null)
     {
         UserFolders = userFolders;
         _catalogService = catalogService ?? new ResourceCatalogService();
@@ -59,19 +61,25 @@ public sealed partial class MainViewModel : ViewModelBase
         var confirmationService = confirmation ?? new ConfirmationService();
         var settingsService = settings ?? new SettingsService();
         var portableService = portables ?? new PortableService();
-        var fullAutoService = new FullAutoService(installationDetector, applicationInstaller, portableService);
+        var historyService = history ?? new OperationHistoryService();
+        var fullAutoService = new FullAutoService(
+            installationDetector, applicationInstaller, portableService, historyService);
         var fullInstallRunner = new FullInstallRunner(
             fullAutoService, confirmationService, new CompletionSoundService());
 
         _dashboard = new DashboardViewModel();
         _applications = new ApplicationsViewModel(
-            installationDetector, applicationInstaller, confirmationService, fullInstallRunner, settingsService);
+            installationDetector, applicationInstaller, confirmationService, fullInstallRunner,
+            settingsService, historyService);
         _browsers = new BrowsersViewModel(
-            installationDetector, applicationInstaller, confirmationService, fullInstallRunner, settingsService);
+            installationDetector, applicationInstaller, confirmationService, fullInstallRunner,
+            settingsService, historyService);
         _portables = new PortablesViewModel(
-            portableService, confirmationService, fullInstallRunner, settingsService);
+            portableService, confirmationService, fullInstallRunner, settingsService, historyService);
         _auxiliary = new AuxiliaryViewModel(auxiliary ?? new AuxiliaryService(), confirmationService);
         _scripts = new ScriptsViewModel();
+        _historyPage = new HistoryViewModel(historyService);
+        historyService.HistoryChanged += (_, _) => _historyPage.Refresh();
 
         NavigationItems = new ObservableCollection<NavigationItem>
         {
@@ -81,6 +89,7 @@ public sealed partial class MainViewModel : ViewModelBase
             new("Portables", SymbolRegular.Toolbox24, _portables),
             new("Auxiliary", SymbolRegular.Folder24, _auxiliary),
             new("Scripts", SymbolRegular.Script24, _scripts),
+            new("History", SymbolRegular.History24, _historyPage),
             new("Settings", SymbolRegular.Settings24, new SettingsViewModel(settingsService)),
         };
 

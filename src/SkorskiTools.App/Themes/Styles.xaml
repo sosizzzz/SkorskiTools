@@ -114,7 +114,8 @@
 
     <!-- Application/browser row with the three installation actions. -->
     <DataTemplate x:Key="ApplicationItemTemplate" DataType="{x:Type vm:ResourceItemViewModel}">
-        <Border Padding="14,10" Margin="0,0,0,6" CornerRadius="8"
+        <Border AutomationProperties.Name="{Binding Title}"
+                Padding="14,10" Margin="0,0,0,6" CornerRadius="8"
                 Background="#0FFFFFFF" BorderBrush="#14FFFFFF" BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>

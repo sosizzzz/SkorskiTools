@@ -26,3 +26,6 @@ resources/**/*.cmd
 resources/**/*.js
 resources/**/*.mozlz4
 resources/**/*.xpi
+
+# Staging area for owner-provided installers (never commit)
+inst/

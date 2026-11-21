@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:controls="clr-namespace:SkorskiTools.App.Views.Controls"
              mc:Ignorable="d"
              d:DesignHeight="560" d:DesignWidth="900">
     <Grid Margin="28,24">
@@ -13,6 +14,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitleStyle}" />
@@ -44,5 +46,7 @@
                        Style="{StaticResource PlaceholderTextStyle}"
                        Visibility="{Binding HasItems, Converter={StaticResource InverseBoolToVisibility}}" />
         </Grid>
+
+        <controls:ResourceDetailsControl Grid.Row="5" Margin="0,12,0,0" />
     </Grid>
 </UserControl>

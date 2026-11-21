@@ -29,6 +29,8 @@ public sealed class ResourceItemViewModel : ObservableObject
     public string FilesText { get; private init; } = string.Empty;
     public string Code { get; private init; } = string.Empty;
     public string Language { get; private init; } = string.Empty;
+    public string ManifestPath { get; private init; } = string.Empty;
+    public string DetailsText { get; private init; } = string.Empty;
     public object? Manifest { get; private init; }
 
     public bool IsSelected
@@ -131,6 +133,16 @@ public sealed class ResourceItemViewModel : ObservableObject
                 : manifest.Category,
             Glyph = CategoryIcons.For(manifest.Category),
             IconPath = iconPath,
+            ManifestPath = manifest.ManifestPath,
+            DetailsText = manifest switch
+            {
+                ApplicationManifest app => string.Join(Environment.NewLine,
+                    app.Files.Select(f => $"{f.File} [{f.Arch}] sha256:{f.Sha256[..12]}...")),
+                PortableManifest portable => $"{portable.Package.File} sha256:{portable.Package.Sha256[..12]}...",
+                AuxiliaryManifest aux => string.Join(Environment.NewLine,
+                    aux.Files.Select(f => $"{f.File} sha256:{f.Sha256[..12]}...")),
+                _ => string.Empty
+            },
             FilesText = manifest switch
             {
                 ApplicationManifest app => string.Join(", ", app.Files.Select(f => f.File)),
@@ -152,6 +164,7 @@ public sealed class ResourceItemViewModel : ObservableObject
         Glyph = SymbolRegular.Script24,
         Language = script.Language,
         Code = script.Code,
+        DetailsText = $"Language: {script.Language}",
         Manifest = script
     };
 }

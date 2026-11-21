@@ -96,7 +96,9 @@ else needs to be installed.
 - **Scripts** — read-only, syntax-highlighted viewer (AvalonEdit) with a one-click
   clipboard copy. **Scripts are never executed.**
 - **Transparency** — Serilog rolling logs in `%LOCALAPPDATA%\Skorski Tools\logs\`
-  record operations, detection results, invalid manifests and hash mismatches.
+  record operations, detection results, invalid manifests and hash mismatches. The
+  in-app **History** page shows install/uninstall/reinstall results, and selecting any
+  resource shows its files, hashes, detection source and manifest path.
 - **Dark Fluent UI** — built with WPF and WPF-UI, designed for clarity and speed.
 
 ## Adding a resource

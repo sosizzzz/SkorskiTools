@@ -14,6 +14,7 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
     private readonly IConfirmationService _confirmation;
     private readonly IFullInstallRunner _fullInstall;
     private readonly ISettingsService _settings;
+    private readonly IOperationHistoryService _history;
     private bool _busy;
 
     [ObservableProperty]
@@ -56,12 +57,14 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
         IPortableService portables,
         IConfirmationService confirmation,
         IFullInstallRunner fullInstall,
-        ISettingsService settings)
+        ISettingsService settings,
+        IOperationHistoryService history)
     {
         _portables = portables;
         _confirmation = confirmation;
         _fullInstall = fullInstall;
         _settings = settings;
+        _history = history;
 
         _isFullAutoEnabled = settings.Current.FullAutoEnabled;
         _isDeveloperModeEnabled = settings.Current.DeveloperModeEnabled;
@@ -142,7 +145,7 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
         _busy = true;
         try
         {
-            Apply(item, await _portables.InstallAsync(manifest).ConfigureAwait(true));
+            Apply(item, await _portables.InstallAsync(manifest).ConfigureAwait(true), "Install");
         }
         finally
         {
@@ -165,7 +168,7 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
         _busy = true;
         try
         {
-            Apply(item, await _portables.ReinstallAsync(manifest).ConfigureAwait(true));
+            Apply(item, await _portables.ReinstallAsync(manifest).ConfigureAwait(true), "Reinstall");
         }
         finally
         {
@@ -188,7 +191,7 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
         _busy = true;
         try
         {
-            Apply(item, await _portables.UninstallAsync(manifest).ConfigureAwait(true));
+            Apply(item, await _portables.UninstallAsync(manifest).ConfigureAwait(true), "Uninstall");
         }
         finally
         {
@@ -290,8 +293,18 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
         HasFullAutoResult = true;
     }
 
-    private void Apply(ResourceItemViewModel item, OperationResult result)
+    private void Apply(ResourceItemViewModel item, OperationResult result, string action)
     {
+        _history.Add(new OperationHistoryEntry
+        {
+            Timestamp = DateTimeOffset.Now,
+            ResourceId = item.Id,
+            ResourceName = item.Title,
+            Action = action,
+            Success = result.Success,
+            Message = result.Message
+        });
+
         if (!result.Success)
             _confirmation.ShowError("Portable operation failed", result.Message);
 

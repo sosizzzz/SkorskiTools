@@ -10,8 +10,9 @@ public sealed class BrowsersViewModel : ApplicationListViewModel
         IApplicationInstaller installer,
         IConfirmationService confirmation,
         IFullInstallRunner fullInstall,
-        ISettingsService settings)
-        : base(detector, installer, confirmation, fullInstall, settings)
+        ISettingsService settings,
+        IOperationHistoryService history)
+        : base(detector, installer, confirmation, fullInstall, settings, history)
     {
     }
 

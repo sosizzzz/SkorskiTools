@@ -249,6 +249,38 @@ public sealed class FullAutoTests
     }
 
     [Fact]
+    public void OperationHistoryService_PersistsAndClearsEntries()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "skorski-history-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var service = new OperationHistoryService(root);
+            Assert.Empty(service.GetEntries());
+
+            service.Add(new OperationHistoryEntry
+            {
+                Timestamp = DateTimeOffset.Now,
+                ResourceId = "test",
+                ResourceName = "Test App",
+                Action = "Install",
+                Success = true,
+                Message = "done"
+            });
+
+            Assert.Single(service.GetEntries());
+            Assert.Equal("Test App", new OperationHistoryService(root).GetEntries()[0].ResourceName);
+
+            service.Clear();
+            Assert.Empty(service.GetEntries());
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+                Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Fact]
     public void SettingsService_PersistsDeveloperModeFlag()
     {
         var root = Path.Combine(Path.GetTempPath(), "skorski-devmode-" + Guid.NewGuid().ToString("N"));
