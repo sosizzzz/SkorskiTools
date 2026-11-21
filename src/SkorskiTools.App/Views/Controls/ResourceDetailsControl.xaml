@@ -5,8 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="900">
-    <Border Padding="14,12" CornerRadius="8" Background="#0BFFFFFF"
-            BorderBrush="#14FFFFFF" BorderThickness="1">
+    <Border Padding="10,8" CornerRadius="8" Background="#0BFFFFFF"
+            BorderBrush="#14FFFFFF" BorderThickness="1" MaxHeight="150">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150" />
@@ -60,5 +61,6 @@
                        TextWrapping="Wrap"
                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         </Grid>
+        </ScrollViewer>
     </Border>
 </UserControl>

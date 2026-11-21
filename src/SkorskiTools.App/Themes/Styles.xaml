@@ -9,14 +9,14 @@
 
     <!-- Shared typography for section pages. -->
     <Style x:Key="PageTitleStyle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="26" />
+        <Setter Property="FontSize" Value="22" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
     </Style>
 
     <Style x:Key="PageSubtitleStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="13" />
-        <Setter Property="Margin" Value="0,6,0,0" />
+        <Setter Property="Margin" Value="0,4,0,0" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
     </Style>
@@ -115,17 +115,18 @@
     <!-- Application/browser row with the three installation actions. -->
     <DataTemplate x:Key="ApplicationItemTemplate" DataType="{x:Type vm:ResourceItemViewModel}">
         <Border AutomationProperties.Name="{Binding Title}"
-                Padding="14,10" Margin="0,0,0,6" CornerRadius="8"
+                Padding="10,6" Margin="0,0,0,4" CornerRadius="8"
                 Background="#0FFFFFFF" BorderBrush="#14FFFFFF" BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30" />
-                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="26" />
+                    <ColumnDefinition Width="36" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <CheckBox Grid.Column="0" VerticalAlignment="Center"
+                <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"
+                          Width="18" Height="18" MinWidth="0" Padding="0" Margin="0"
                           IsChecked="{Binding IsSelected}"
                           IsEnabled="{Binding CanSelectForFullAuto}"
                           ToolTip="{Binding SelectionTooltip}"

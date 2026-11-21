@@ -1,4 +1,4 @@
-<UserControl x:Class="SkorskiTools.App.Views.Pages.AuxiliaryPage"
+﻿<UserControl x:Class="SkorskiTools.App.Views.Pages.AuxiliaryPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,7 @@
              xmlns:controls="clr-namespace:SkorskiTools.App.Views.Controls"
              mc:Ignorable="d"
              d:DesignHeight="560" d:DesignWidth="900">
-    <Grid Margin="28,24">
+    <Grid Margin="20,16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -20,7 +20,7 @@
         <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitleStyle}" />
         <TextBlock Grid.Row="1" Text="{Binding Subtitle}" Style="{StaticResource PageSubtitleStyle}" />
 
-        <Grid Grid.Row="2" Margin="0,20,0,8">
+        <Grid Grid.Row="2" Margin="0,12,0,6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="110" />
@@ -47,6 +47,7 @@
                        Visibility="{Binding HasItems, Converter={StaticResource InverseBoolToVisibility}}" />
         </Grid>
 
-        <controls:ResourceDetailsControl Grid.Row="5" Margin="0,12,0,0" />
+        <controls:ResourceDetailsControl Grid.Row="5" Margin="0,8,0,0" />
     </Grid>
 </UserControl>
+
