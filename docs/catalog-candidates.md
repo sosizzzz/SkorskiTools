@@ -47,11 +47,10 @@ Notes:
 
 ## Gaps found in the current engine
 
-1. **MSI packages.** `ApplicationInstaller` currently starts the manifest file
-   directly. `.msi` files must be started through
-   `msiexec.exe /i "<file>" <arguments>`. Adding LibreOffice, Node.js or Zoom requires
-   a generic change: detect `.msi` and prepend `msiexec /i` with the quoted path. This
-   is a one-time engine improvement, not a per-app hack.
+1. **MSI packages — resolved.** `ApplicationInstaller` now detects `.msi` files and
+   starts them through `msiexec.exe /i <path> <arguments>`, with the package path as a
+   separate argument (never concatenated). LibreOffice, Node.js and Zoom can therefore
+   be added later with a manifest only.
 
 2. **User vs machine installers.** The manifest already has
    `fullAuto.scope: user|machine`. For VS Code and 7-Zip the owner must bundle the

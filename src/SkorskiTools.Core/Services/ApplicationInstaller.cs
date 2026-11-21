@@ -135,7 +135,8 @@ public sealed class ApplicationInstaller : IApplicationInstaller
         if (!Sha256Verifier.Matches(path, file.Sha256))
             return OperationResult.Fail($"SHA-256 mismatch for '{file.File}'. The operation was cancelled.");
 
-        var start = new ProcessStartInfo(path)
+        var (executable, commandArguments) = BuildInstallCommand(path, arguments);
+        var start = new ProcessStartInfo(executable)
         {
             UseShellExecute = true,
             WorkingDirectory = manifest.ResourceDirectory
@@ -144,7 +145,7 @@ public sealed class ApplicationInstaller : IApplicationInstaller
         if (manifest.FullAuto?.Scope == InstallationScope.Machine)
             start.Verb = "runas";
 
-        foreach (var argument in arguments)
+        foreach (var argument in commandArguments)
         {
             if (!string.IsNullOrWhiteSpace(argument))
                 start.ArgumentList.Add(argument);
@@ -220,6 +221,24 @@ public sealed class ApplicationInstaller : IApplicationInstaller
             _logger.Error(ex, "Uninstaller for {Id} failed", manifest.Id);
             return OperationResult.Fail($"The uninstaller could not be started: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Builds the process command. MSI packages are started through msiexec with the
+    /// package path as a separate argument after /i; paths are never concatenated.
+    /// </summary>
+    public static (string Executable, IReadOnlyList<string> Arguments) BuildInstallCommand(
+        string installerPath,
+        IEnumerable<string> arguments)
+    {
+        if (installerPath.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
+        {
+            var msiArguments = new List<string> { "/i", installerPath };
+            msiArguments.AddRange(arguments);
+            return ("msiexec.exe", msiArguments);
+        }
+
+        return (installerPath, arguments.ToList());
     }
 
     /// <summary>Splits a registered command into executable and argument text.</summary>

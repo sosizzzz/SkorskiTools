@@ -7,7 +7,7 @@ Executed on Windows 11, .NET 10.0.404, non-elevated user session.
 | Check | Result |
 |---|---|
 | `dotnet build SkorskiTools.sln -c Debug` | 0 errors, 0 warnings |
-| `dotnet test SkorskiTools.sln -c Debug` | 65/65 passed |
+| `dotnet test SkorskiTools.sln -c Debug` | 67/67 passed |
 | Inno Setup compile (`ISCC.exe SkorskiTools.iss`) | Successful, 0 warnings |
 
 Unit test coverage includes: path safety, SHA-256, manifest schema/rules,

@@ -227,6 +227,28 @@ public sealed class FullAutoTests
     }
 
     [Fact]
+    public void BuildInstallCommand_UsesMsiexecForMsiPackages()
+    {
+        var path = @"C:\Installers\LibreOffice x64.msi";
+
+        var result = ApplicationInstaller.BuildInstallCommand(path, new[] { "/qn", "/norestart" });
+
+        Assert.Equal("msiexec.exe", result.Executable);
+        Assert.Equal(new[] { "/i", path, "/qn", "/norestart" }, result.Arguments);
+    }
+
+    [Fact]
+    public void BuildInstallCommand_UsesExecutableDirectlyForExe()
+    {
+        var path = @"C:\Installers\vlc.exe";
+
+        var result = ApplicationInstaller.BuildInstallCommand(path, new[] { "/S" });
+
+        Assert.Equal(path, result.Executable);
+        Assert.Equal(new[] { "/S" }, result.Arguments);
+    }
+
+    [Fact]
     public void SettingsService_PersistsDeveloperModeFlag()
     {
         var root = Path.Combine(Path.GetTempPath(), "skorski-devmode-" + Guid.NewGuid().ToString("N"));

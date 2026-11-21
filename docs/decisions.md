@@ -236,3 +236,7 @@ reuse the same flag. The button requires both Full Auto and Developer mode to be
 
 Full Auto development is **parked** at this point: the feature is functional, tested
 and documented, but no further work is planned until the owner asks for it.
+
+One generic improvement was made while analysing future candidates: MSI packages are
+now launched through `msiexec.exe /i <path> <arguments>`. This was required to make
+LibreOffice (and other MSI apps) installable later without touching the engine again.
