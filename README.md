@@ -170,6 +170,7 @@ The installer is written to `installer\output\SkorskiTools-Setup.exe`.
 
 - [Technical decisions](docs/decisions.md)
 - [Silent-install candidate catalog](docs/catalog-candidates.md)
+- [Feature suggestions](docs/suggestions.md)
 - [Final verification report](docs/verification.md)
 - [Release notes](docs/release-notes.md)
 
