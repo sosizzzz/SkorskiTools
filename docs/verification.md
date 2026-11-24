@@ -26,6 +26,7 @@ installer argument parsing, auxiliary copying and portable deployment.
 | "Detect applications" button | Re-ran detection; new log entry and updated summary |
 | Install button states | 2 enabled (not installed); Uninstall/Reinstall disabled for those 2 and enabled for the other 2 |
 | Script copy button | Full code copied to clipboard |
+| Script code panel | Kept below the list (not a side panel); height reduced from 140 to 92 px, verified with both bundled scripts |
 | Auxiliary Download button | 2 files copied and SHA-256 verified into the user folder |
 | Running as administrator | No (standard user session) |
 | Full install switch off by default | Yes; settings.json holds `fullAutoEnabled: false` |

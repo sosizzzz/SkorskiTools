@@ -45,7 +45,7 @@
                        Visibility="{Binding HasItems, Converter={StaticResource InverseBoolToVisibility}}" />
         </Grid>
 
-        <Border Grid.Row="4" Margin="0,12,0,0" Style="{StaticResource InfoPanelStyle}">
+        <Border Grid.Row="4" Margin="0,8,0,0" Style="{StaticResource InfoPanelStyle}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -54,7 +54,7 @@
                 <TextBlock Text="Code (read only — scripts are never executed)"
                            FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"
                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                <Border Grid.Row="1" Height="140" Background="#08000000" CornerRadius="4" Padding="8">
+                <Border Grid.Row="1" Height="92" Background="#08000000" CornerRadius="4" Padding="8">
                     <avalonEdit:TextEditor
                         IsReadOnly="True"
                         ShowLineNumbers="False"
