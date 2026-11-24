@@ -53,9 +53,13 @@ public sealed class ApplicationInstaller : IApplicationInstaller
         if (!result.Success)
             return result;
 
-        return result.ExitCode == 0
-            ? OperationResult.Ok($"Installer for {manifest.Name} finished successfully.", result.ExitCode)
-            : OperationResult.Fail($"Installer for {manifest.Name} exited with code {result.ExitCode}.", result.ExitCode);
+        if (result.ExitCode == 0)
+            return OperationResult.Ok($"Installer for {manifest.Name} finished successfully.", result.ExitCode);
+
+        var message = manifest.FullAuto?.DescribeUnexpectedExitCode(result.ExitCode ?? -1)
+            ?? $"Installer for {manifest.Name} exited with code {result.ExitCode}. " +
+               FullAutoConfig.GenericFailureHint;
+        return OperationResult.Fail(message, result.ExitCode);
     }
 
     public async Task<OperationResult> InstallAutomatedAsync(

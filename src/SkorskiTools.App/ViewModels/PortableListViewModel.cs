@@ -240,7 +240,7 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
                 item.IsSelected = false;
             }
 
-            ShowFullInstallResult(outcome.Ok, outcome.Message);
+            ShowFullInstallResult(outcome);
             DetectionSummary = outcome.Message;
         }
         catch (Exception ex)
@@ -284,6 +284,15 @@ public abstract partial class PortableListViewModel : CatalogListViewModel
 
         ShowFullInstallResult(preview.AllHashesValid, string.Join(Environment.NewLine, text));
         DetectionSummary = "Simulation ready.";
+    }
+
+    private void ShowFullInstallResult(FullInstallOutcome outcome)
+    {
+        var message = outcome.Message;
+        if (outcome.Details.Count > 0)
+            message += Environment.NewLine + Environment.NewLine
+                       + string.Join(Environment.NewLine, outcome.Details);
+        ShowFullInstallResult(outcome.Ok, message);
     }
 
     private void ShowFullInstallResult(bool ok, string message)

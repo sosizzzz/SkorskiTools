@@ -397,6 +397,9 @@ public sealed partial class ManifestReader
             InstallArguments = arguments.ToArray(),
             ExpectedExitCodes = dto.ExpectedExitCodes?.ToArray() ?? new[] { 0 },
             RestartExitCodes = dto.RestartExitCodes?.ToArray() ?? new[] { 3010, 1641 },
+            ExitCodeHints = dto.ExitCodeHints is { Count: > 0 }
+                ? new Dictionary<int, string>(dto.ExitCodeHints)
+                : new Dictionary<int, string>(),
             Uninstall = new FullAutoUninstallConfig
             {
                 UseQuietUninstallString = dto.Uninstall?.UseQuietUninstallString ?? true,

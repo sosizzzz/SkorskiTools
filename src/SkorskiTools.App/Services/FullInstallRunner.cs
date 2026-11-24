@@ -6,7 +6,11 @@ using SkorskiTools.Core.Services;
 namespace SkorskiTools.App.Services;
 
 /// <summary>Result of a full install batch shown in the UI.</summary>
-public sealed record FullInstallOutcome(bool Ok, string Message);
+public sealed record FullInstallOutcome(bool Ok, string Message)
+{
+    /// <summary>Per-resource lines, including failure reasons, shown under the summary.</summary>
+    public IReadOnlyList<string> Details { get; init; } = Array.Empty<string>();
+}
 
 /// <summary>One line of a dry-run preview. Nothing is executed.</summary>
 public sealed record FullInstallPreviewLine(
@@ -149,7 +153,10 @@ public sealed class FullInstallRunner : IFullInstallRunner
         var result = await _fullAuto.ExecuteAsync(plan, progress, cancellationToken).ConfigureAwait(true);
 
         var summary = $"{result.Succeeded} succeeded · {result.Failed} failed · {result.RequiringRestart} need restart";
-        var outcome = new FullInstallOutcome(result.Failed == 0, summary);
+        var outcome = new FullInstallOutcome(result.Failed == 0, summary)
+        {
+            Details = result.Messages
+        };
         _sound.Play(outcome.Ok);
 
         return outcome;

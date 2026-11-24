@@ -290,6 +290,29 @@ empty between deliveries. This avoids keeping duplicate copies of large installe
 
 The selection checkbox is wrapped in an enabled `Border` carrying the tooltip, because
 a disabled WPF control does not raise tooltip events by itself.
+
+### Installer failure handling
+
+A field test on a fresh PC reported Chrome error **57** during Full install while
+Firefox and Office succeeded. Google documents 57 as a generic "install failed"
+code, typically caused by the web stub being unable to download or apply the browser
+(network, firewall, antivirus, disk space or Google Update). The app cannot fix a
+vendor download failure, but it must not hide it:
+
+- `fullAuto.exitCodeHints` is an optional map of exit code → plain explanation in the
+  manifest. Chrome documents 57 there, so the owner can add more codes without code
+  changes. Unknown codes use a generic but actionable hint.
+- Unattended installs are now verified with a fresh detection after the process exits.
+  A "successful" exit code no longer counts as success if the application is not
+  actually detected; that avoids false green results from web installers.
+- The real exit code is recorded in the operation history (it used to be overwritten
+  with 0/3010), and every per-resource line is shown under the batch summary in the UI.
+- Manual installs use the same hints, so the failure message is actionable there too.
+
+We deliberately did **not** switch Chrome to `--system-level` blindly: that would
+change the install scope and trigger UAC without evidence that it fixes error 57.
+If the owner supplies a full offline Chrome installer, the manifest can be changed
+to use it with no source edit.
 - Git: registry detection `Git` (exact — verified against the installed entry),
   silent `/VERYSILENT /NORESTART /SP-`, machine scope.
 

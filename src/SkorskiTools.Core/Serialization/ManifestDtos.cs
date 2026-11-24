@@ -60,6 +60,7 @@ internal sealed class FullAutoDto
     public List<string>? InstallArguments { get; set; }
     public List<int>? ExpectedExitCodes { get; set; }
     public List<int>? RestartExitCodes { get; set; }
+    public Dictionary<int, string>? ExitCodeHints { get; set; }
     public FullAutoUninstallDto? Uninstall { get; set; }
 }
 

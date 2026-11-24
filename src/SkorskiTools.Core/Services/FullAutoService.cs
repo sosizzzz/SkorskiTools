@@ -149,9 +149,7 @@ public sealed class FullAutoService : IFullAutoService
                 Action = item.Action.ToString(),
                 Success = outcome.Success && !outcome.RestartRequired,
                 Message = outcome.Message,
-                ExitCode = item.Manifest is ApplicationManifest
-                    ? outcome.RestartRequired ? 3010 : 0
-                    : null
+                ExitCode = outcome.ExitCode
             });
         }
 
@@ -170,7 +168,13 @@ public sealed class FullAutoService : IFullAutoService
         return result;
     }
 
-    private async Task<(bool Success, string Message, bool RestartRequired)> ExecuteApplicationAsync(
+    private sealed record ExecuteOutcome(
+        bool Success,
+        string Message,
+        bool RestartRequired,
+        int? ExitCode);
+
+    private async Task<ExecuteOutcome> ExecuteApplicationAsync(
         ApplicationManifest manifest,
         FullAutoPlanItem item,
         CancellationToken cancellationToken)
@@ -182,40 +186,53 @@ public sealed class FullAutoService : IFullAutoService
                 .ConfigureAwait(false);
 
             if (!removal.Success)
-                return (false, $"uninstall failed - {removal.Message}", false);
+                return new ExecuteOutcome(false, $"uninstall failed - {removal.Message}", false, removal.ExitCode);
         }
 
         var install = await _installer
             .InstallAutomatedAsync(manifest, cancellationToken)
             .ConfigureAwait(false);
 
-        if (!install.Success)
-            return (false, install.Message, false);
-
         var exitCode = install.ExitCode ?? -1;
+        if (!install.Success)
+            return new ExecuteOutcome(false, install.Message, false, install.ExitCode);
+
         var config = manifest.FullAuto!;
 
         if (config.RestartExitCodes.Contains(exitCode))
-            return (true, $"exit code {exitCode}", true);
+            return new ExecuteOutcome(true, $"installed, exit code {exitCode} (restart required)", true, exitCode);
 
-        if (config.ExpectedExitCodes.Contains(exitCode))
-            return (true, $"exit code {exitCode}", false);
+        if (!config.ExpectedExitCodes.Contains(exitCode))
+            return new ExecuteOutcome(false, config.DescribeUnexpectedExitCode(exitCode), false, exitCode);
 
-        return (false, $"unexpected exit code {exitCode}", false);
+        // A zero exit code is not proof of installation: web installers can fail after
+        // downloading and still report success. Trust detection, not the process alone.
+        var verification = await _detector.DetectAsync(manifest, cancellationToken).ConfigureAwait(false);
+        if (!verification.IsInstalled)
+        {
+            return new ExecuteOutcome(
+                false,
+                $"installer exited with code {exitCode} but {manifest.Name} was not detected afterwards. " +
+                "Check the log and run detection again.",
+                false,
+                exitCode);
+        }
+
+        return new ExecuteOutcome(true, $"installed, exit code {exitCode}", false, exitCode);
     }
 
-    private async Task<(bool Success, string Message, bool RestartRequired)> ExecutePortableAsync(
+    private async Task<ExecuteOutcome> ExecutePortableAsync(
         ManifestBase manifest,
         FullAutoAction action,
         CancellationToken cancellationToken)
     {
         if (manifest is not PortableManifest portable)
-            return (false, "Unsupported portable manifest", false);
+            return new ExecuteOutcome(false, "Unsupported portable manifest", false, null);
 
         var result = action == FullAutoAction.Reinstall
             ? await _portables.ReinstallAsync(portable, cancellationToken).ConfigureAwait(false)
             : await _portables.InstallAsync(portable, cancellationToken).ConfigureAwait(false);
 
-        return (result.Success, result.Message, false);
+        return new ExecuteOutcome(result.Success, result.Message, false, result.ExitCode);
     }
 }

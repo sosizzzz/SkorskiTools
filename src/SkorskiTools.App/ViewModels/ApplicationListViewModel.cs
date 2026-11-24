@@ -278,7 +278,7 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
                 item.IsSelected = false;
             }
 
-            ShowFullInstallResult(outcome.Ok, outcome.Message);
+            ShowFullInstallResult(outcome);
             DetectionSummary = outcome.Message;
         }
         catch (Exception ex)
@@ -337,6 +337,15 @@ public abstract partial class ApplicationListViewModel : CatalogListViewModel
             Message = result.Message,
             ExitCode = result.ExitCode
         });
+
+    private void ShowFullInstallResult(FullInstallOutcome outcome)
+    {
+        var message = outcome.Message;
+        if (outcome.Details.Count > 0)
+            message += Environment.NewLine + Environment.NewLine
+                       + string.Join(Environment.NewLine, outcome.Details);
+        ShowFullInstallResult(outcome.Ok, message);
+    }
 
     private void ShowFullInstallResult(bool ok, string message)
     {

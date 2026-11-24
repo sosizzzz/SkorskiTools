@@ -31,7 +31,10 @@
                      "installArguments":  [
                                               "/silent",
                                               "/install"
-                                          ]
+                                          ],
+                     "exitCodeHints":  {
+                                           "57":  "Google's web installer could not download or apply Chrome. Check the internet connection, firewall and antivirus, free disk space, and that Google Update is allowed. If it keeps failing, use a full offline Chrome installer provided by the owner."
+                                       }
                  },
     "highlights":  [
                        "Fast page rendering",

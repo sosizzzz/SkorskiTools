@@ -301,6 +301,98 @@ public sealed class FullAutoTests
         }
     }
 
+    [Fact]
+    public void ManifestReader_ParsesExitCodeHints()
+    {
+        var root = TestData.CreateTempResources();
+        var hash = TestData.CreateResource(root, "installers/test-app", "setup.exe");
+        TestData.WriteManifest(root, "installers/test-app", AppJson(hash, """
+            ,"fullAuto": {
+              "enabled": true,
+              "installArguments": ["/S"],
+              "exitCodeHints": { "57": "Check the network." }
+            }
+            """));
+
+        var reader = new ManifestReader(TestData.SchemasDirectory, new[] { "utilities" });
+        var result = reader.Read(Path.Combine(root, "installers", "test-app", "manifest.json"),
+            ManifestKind.Application);
+
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+        var manifest = Assert.IsType<ApplicationManifest>(result.Manifest);
+        Assert.Equal("Check the network.", manifest.FullAuto!.ExitCodeHints[57]);
+    }
+
+    [Fact]
+    public async Task Execute_UnexpectedExitCode_UsesManifestHint()
+    {
+        var app = new ApplicationManifest
+        {
+            SchemaVersion = 1,
+            Id = "chrome",
+            Name = "Chrome",
+            FullAuto = new FullAutoConfig
+            {
+                Enabled = true,
+                InstallArguments = new[] { "/silent", "/install" },
+                ExitCodeHints = new Dictionary<int, string> { [57] = "Check the network." }
+            }
+        };
+        var plan = Plan(app);
+        var installer = new FakeInstaller { InstallResult = OperationResult.Ok("started", 57) };
+        var service = new FullAutoService(new FakeDetector(), installer);
+
+        var result = await service.ExecuteAsync(plan);
+
+        Assert.Equal(1, result.Failed);
+        Assert.Contains(result.Messages,
+            m => m.Contains("57", StringComparison.Ordinal)
+                 && m.Contains("Check the network.", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task Execute_ZeroExitButNotDetected_IsFailure()
+    {
+        var app = Manifest("app", true);
+        var installer = new FakeInstaller { InstallResult = OperationResult.Ok("done", 0) };
+        var detector = new FakeDetector(); // reports nothing installed
+        var service = new FullAutoService(detector, installer);
+
+        var result = await service.ExecuteAsync(Plan(app));
+
+        Assert.Equal(1, result.Failed);
+        Assert.Contains(result.Messages, m => m.Contains("not detected", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task Execute_RecordsRealExitCodeInHistory()
+    {
+        var app = Manifest("app", true);
+        var history = new FakeHistory();
+        var installer = new FakeInstaller { InstallResult = OperationResult.Ok("done", 3010) };
+        var detector = new FakeDetector(app.Id); // installed, so verification passes
+        var service = new FullAutoService(detector, installer, history: history);
+
+        await service.ExecuteAsync(Plan(app));
+
+        var entry = Assert.Single(history.Entries);
+        Assert.Equal(3010, entry.ExitCode);
+        Assert.False(entry.Success); // restart required is not a clean success
+    }
+
+    private static FullAutoPlan Plan(ApplicationManifest app) => new()
+    {
+        Items = new[]
+        {
+            new FullAutoPlanItem
+            {
+                Manifest = app,
+                Detection = DetectionResult.NotInstalled,
+                Action = FullAutoAction.Install
+            }
+        }
+    };
+
     private static ApplicationManifest Manifest(string id, bool enabled) => new()
     {
         SchemaVersion = 1,
@@ -386,5 +478,26 @@ public sealed class FullAutoTests
             DetectionResult detection,
             CancellationToken cancellationToken = default) =>
             Task.FromResult(QuietUninstallResult);
+    }
+
+    private sealed class FakeHistory : IOperationHistoryService
+    {
+        public List<OperationHistoryEntry> Entries { get; } = new();
+
+        public event EventHandler? HistoryChanged;
+
+        public IReadOnlyList<OperationHistoryEntry> GetEntries() => Entries;
+
+        public void Add(OperationHistoryEntry entry)
+        {
+            Entries.Add(entry);
+            HistoryChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Clear()
+        {
+            Entries.Clear();
+            HistoryChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
