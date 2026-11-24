@@ -7,7 +7,7 @@ Executed on Windows 11, .NET 10.0.404, non-elevated user session.
 | Check | Result |
 |---|---|
 | `dotnet build SkorskiTools.sln -c Debug` | 0 errors, 0 warnings |
-| `dotnet test SkorskiTools.sln -c Debug` | 72/72 passed |
+| `dotnet test SkorskiTools.sln -c Debug` | 74/74 passed |
 | Inno Setup compile (`ISCC.exe SkorskiTools.iss`) | Successful, 0 warnings |
 
 Unit test coverage includes: path safety, SHA-256, manifest schema/rules,
@@ -39,6 +39,7 @@ installer argument parsing, auxiliary copying and portable deployment.
 | Eligible checkboxes | Clear rounded checkboxes; Office disabled with tooltip, Firefox disabled in Browsers |
 | Blocked checkbox | Firefox, Office and Acrobat disabled with a tooltip explaining each vendor limitation |
 | Installer failure feedback | Exit codes and manifest hints surface in the result banner and history; zero-exit installs are verified by detection |
+| Manual installer failure | Integration test simulates a real process exiting with code 57 and asserts the manifest hint reaches the user |
 | Simulate button | Hidden unless both Full Auto and Developer mode are on; showed exact commands and `SHA-256: OK` for 4 applications without starting any installer |
 | Executable icon resource | `RT_GROUP_ICON` present in `SkorskiTools.App.exe` |
 | Portable desktop shortcut | Real `.lnk` created, `IconLocation` = shipped `SkorskiTools.ico`, and removed on uninstall |
