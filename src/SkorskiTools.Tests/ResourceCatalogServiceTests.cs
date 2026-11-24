@@ -15,6 +15,9 @@ public sealed class ResourceCatalogServiceTests
         Assert.All(result.Applications, a => Assert.Equal(3, a.Highlights.Count));
         Assert.All(result.Browsers, b => Assert.Equal(3, b.Highlights.Count));
 
+        var chrome = result.Browsers.Single(b => b.Id == "chrome");
+        Assert.Contains("web installer", chrome.InstallNote, StringComparison.OrdinalIgnoreCase);
+
         var office = result.Applications.Single(a => a.Id == "office");
         Assert.NotNull(office.FullAuto);
         Assert.False(office.FullAuto!.Supported);

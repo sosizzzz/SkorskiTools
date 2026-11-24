@@ -13,6 +13,7 @@
     "version": { "type": "string" },
     "category": { "type": "string" },
     "icon": { "type": "string" },
+    "installNote": { "type": "string" },
     "files": {
       "type": "array",
       "minItems": 1,

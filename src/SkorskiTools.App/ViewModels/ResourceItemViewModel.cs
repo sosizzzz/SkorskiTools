@@ -30,6 +30,8 @@ public sealed class ResourceItemViewModel : ObservableObject
     public string Code { get; private init; } = string.Empty;
     public string Language { get; private init; } = string.Empty;
     public string ManifestPath { get; private init; } = string.Empty;
+    public string InstallNote { get; private init; } = string.Empty;
+    public bool HasInstallNote => !string.IsNullOrWhiteSpace(InstallNote);
     public string DetailsText { get; private init; } = string.Empty;
     public string HighlightsText { get; private init; } = string.Empty;
     public object? Manifest { get; private init; }
@@ -135,6 +137,7 @@ public sealed class ResourceItemViewModel : ObservableObject
             Glyph = CategoryIcons.For(manifest.Category),
             IconPath = iconPath,
             ManifestPath = manifest.ManifestPath,
+            InstallNote = manifest.InstallNote,
             HighlightsText = string.Join(Environment.NewLine, manifest.Highlights.Select(h => $"• {h}")),
             DetailsText = manifest switch
             {

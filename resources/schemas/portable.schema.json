@@ -13,6 +13,7 @@
     "version": { "type": "string" },
     "category": { "type": "string" },
     "icon": { "type": "string" },
+    "installNote": { "type": "string" },
     "package": {
       "type": "object",
       "required": ["file", "sha256"],

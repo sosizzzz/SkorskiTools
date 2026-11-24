@@ -3,6 +3,7 @@
     "id":  "chrome",
     "name":  "Google Chrome",
     "description":  "Web browser.",
+    "installNote":  "Google's web installer: downloads Chrome during setup and needs an internet connection. Error 57 usually means the download was blocked; an offline installer avoids it.",
     "version":  "",
     "category":  "networking",
     "files":  [

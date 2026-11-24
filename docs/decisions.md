@@ -313,6 +313,18 @@ We deliberately did **not** switch Chrome to `--system-level` blindly: that woul
 change the install scope and trigger UAC without evidence that it fixes error 57.
 If the owner supplies a full offline Chrome installer, the manifest can be changed
 to use it with no source edit.
+
+### Detail panel and install notes
+
+- `installNote` is an optional common field in every resource manifest (schemas of
+  applications, portables and auxiliary). It shows vendor caveats such as Chrome's
+  web-installer requirement without hardcoding application names in the UI.
+- `ResourceDetailsControl` lives in a **330 px right-hand column** on Applications,
+  Browsers, Portables and Auxiliary. Keeping it out of the list's row means adding
+  detail content never reduces the number of visible list items.
+- The panel is intentionally narrow: labels and values stack vertically, the note
+  owns its own wrapping row, and no field shares a row with right-side metadata.
+  This avoids the overlap seen when the panel was placed below the list.
 - Git: registry detection `Git` (exact — verified against the installed entry),
   silent `/VERYSILENT /NORESTART /SP-`, machine scope.
 

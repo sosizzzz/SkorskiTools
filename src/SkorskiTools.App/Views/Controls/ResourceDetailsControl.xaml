@@ -4,15 +4,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             d:DesignHeight="200" d:DesignWidth="900">
-    <Border Padding="10,8" CornerRadius="8" Background="#0BFFFFFF"
-            BorderBrush="#14FFFFFF" BorderThickness="1" MaxHeight="150">
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
+             d:DesignHeight="420" d:DesignWidth="330">
+    <Border Padding="12,10" CornerRadius="8" Background="#0BFFFFFF"
+            BorderBrush="#14FFFFFF" BorderThickness="1" VerticalAlignment="Top">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="88" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="260" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -20,47 +18,56 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Selected resource" Grid.ColumnSpan="3" FontSize="13" FontWeight="SemiBold"
-                       Margin="0,0,0,8"
+            <TextBlock Text="Selected resource" Grid.ColumnSpan="2" FontSize="13" FontWeight="SemiBold"
+                       Margin="0,0,0,10"
                        Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 
-            <TextBlock Text="Name" Style="{StaticResource SidebarLabelStyle}" />
-            <TextBlock Grid.Column="1" Text="{Binding SelectedItem.Title}" FontSize="13"
+            <TextBlock Text="Name" Style="{StaticResource SidebarLabelStyle}" Grid.Row="1" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedItem.Title}" FontSize="13"
                        Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-            <TextBlock Grid.Column="2" Text="{Binding SelectedItem.StatusText}" FontSize="12"
-                       HorizontalAlignment="Right"
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,2,0,8">
+                <TextBlock Text="{Binding SelectedItem.StatusText}" FontSize="11"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                <TextBlock Text="{Binding SelectedItem.DetectionSource}" FontSize="10"
+                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+            </StackPanel>
+
+            <TextBlock Text="Category" Style="{StaticResource SidebarLabelStyle}" Grid.Row="3" />
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedItem.CategoryName}" FontSize="12"
                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-            <TextBlock Grid.Row="1" Text="Category" Style="{StaticResource SidebarLabelStyle}" />
-            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedItem.CategoryName}" FontSize="12"
+            <TextBlock Text="Id" Style="{StaticResource SidebarLabelStyle}" Grid.Row="4" />
+            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedItem.Id}" FontSize="12"
                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SelectedItem.DetectionSource}" FontSize="11"
-                       HorizontalAlignment="Right"
-                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
-            <TextBlock Grid.Row="2" Text="Id" Style="{StaticResource SidebarLabelStyle}" />
-            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedItem.Id}" FontSize="12"
-                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SelectedItem.InstalledVersion}" FontSize="11"
-                       HorizontalAlignment="Right"
-                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+            <!-- The note owns a full row so it can wrap without overlapping metadata. -->
+            <TextBlock Text="Install note" Style="{StaticResource SidebarLabelStyle}" Grid.Row="5"
+                       VerticalAlignment="Top"
+                       Visibility="{Binding SelectedItem.HasInstallNote, Converter={StaticResource BoolToVisibility}}" />
+            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SelectedItem.InstallNote}" FontSize="12"
+                       TextWrapping="Wrap" Foreground="#FFD47A"
+                       Visibility="{Binding SelectedItem.HasInstallNote, Converter={StaticResource BoolToVisibility}}" />
 
-            <TextBlock Grid.Row="3" Text="Files" Style="{StaticResource SidebarLabelStyle}" VerticalAlignment="Top" />
-            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedItem.DetailsText}" FontSize="11"
-                       TextWrapping="Wrap" MaxHeight="90"
-                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-            <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SelectedItem.ManifestPath}" FontSize="10"
-                       TextWrapping="Wrap" HorizontalAlignment="Right"
-                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+            <TextBlock Text="Files" Style="{StaticResource SidebarLabelStyle}" Grid.Row="6"
+                       VerticalAlignment="Top" />
+            <StackPanel Grid.Row="6" Grid.Column="1">
+                <TextBlock Text="{Binding SelectedItem.DetailsText}" FontSize="11" TextWrapping="Wrap"
+                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                <TextBlock Text="{Binding SelectedItem.ManifestPath}" FontSize="10" TextWrapping="Wrap"
+                           Margin="0,4,0,0"
+                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+            </StackPanel>
 
-            <TextBlock Grid.Row="4" Text="Why it's useful" Style="{StaticResource SidebarLabelStyle}" VerticalAlignment="Top" />
-            <TextBlock Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
-                       Text="{Binding SelectedItem.HighlightsText}" FontSize="12"
+            <TextBlock Text="Why it's useful" Style="{StaticResource SidebarLabelStyle}" Grid.Row="7"
+                       VerticalAlignment="Top" />
+            <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding SelectedItem.HighlightsText}" FontSize="12"
                        TextWrapping="Wrap"
                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         </Grid>
-        </ScrollViewer>
     </Border>
 </UserControl>

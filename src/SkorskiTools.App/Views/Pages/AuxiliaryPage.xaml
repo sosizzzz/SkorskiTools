@@ -8,6 +8,10 @@
              mc:Ignorable="d"
              d:DesignHeight="560" d:DesignWidth="900">
     <Grid Margin="20,16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="330" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -47,7 +51,8 @@
                        Visibility="{Binding HasItems, Converter={StaticResource InverseBoolToVisibility}}" />
         </Grid>
 
-        <controls:ResourceDetailsControl Grid.Row="5" Margin="0,8,0,0" />
+        <controls:ResourceDetailsControl Grid.Column="1" Grid.Row="0" Grid.RowSpan="6"
+                                         Margin="14,0,0,0" VerticalAlignment="Top" />
     </Grid>
 </UserControl>
 
