@@ -29,9 +29,19 @@
 
 ## Installation
 
-**[⬇ Download SkorskiTools-Setup.exe (205 MB)](https://github.com/sosizzzz/SkorskiTools/releases/download/v1.0.0/SkorskiTools-Setup.exe)**
+**[⬇ Download SkorskiTools-Setup.exe (319 MB)](https://github.com/sosizzzz/SkorskiTools/releases/download/v1.0.0/SkorskiTools-Setup.exe)**
 
 Or browse [all releases](https://github.com/sosizzzz/SkorskiTools/releases).
+
+### Previous installers
+
+Until automatic updates are available, older builds are kept on the release page.
+Use them only if you need to go back to an earlier state. The download link above
+always points to the newest build.
+
+| Build | Published | Size | File |
+|---|---|---|---|
+| v1.0.0 (initial) | 2026-11-21 | 205 MB | [SkorskiTools-Setup-v1.0.0-20261121.exe](https://github.com/sosizzzz/SkorskiTools/releases/download/v1.0.0/SkorskiTools-Setup-v1.0.0-20261121.exe) |
 
 Run the installer and choose the scope when asked:
 
@@ -84,12 +94,16 @@ else needs to be installed.
   hashes, scope and skipped resources without executing anything. Manual buttons are
   unchanged and no switch is guessed. Skorski Tools itself downloads nothing; the
   bundled Office installer does fetch Office files from Microsoft as part of its own
-  normal behavior. Installers that cannot run unattended (currently the Firefox stub)
-  show a disabled checkbox with an explanatory tooltip.
+  normal behavior. Installers that cannot run unattended — the Firefox stub, Office's
+  ODT downloader and Adobe's consumer stub — show a disabled checkbox with an
+  explanatory tooltip. Installer exit codes and manifest hints are reported in the
+  result banner and the History page, and a zero exit code is confirmed by a fresh
+  detection before counting as success.
 - **Browsers** — a separate section that reuses the exact same application logic.
   Firefox, Chrome and Brave are included out of the box.
-- **Resource details** — selecting an application or browser shows three practical
-  benefits stored in its manifest, plus files, hashes and detection source.
+- **Resource details** — a right-hand panel shows three practical benefits stored in
+  the manifest, plus files, hashes, detection source and any optional install note.
+  It stays out of the list's row, so more detail never means fewer visible resources.
 - **Portables** — deployed atomically into the user profile, with a desktop shortcut
   to the real executable. Removal warns about data loss and deletes only that
   portable's own folder. Nothing is downloaded from the internet.
