@@ -37,7 +37,7 @@ installer argument parsing, auxiliary copying and portable deployment.
 | New resources | VLC, Git and Brave loaded with 0 issues; Git detected as installed 2.56.1; Simulate showed its command and valid hash |
 | Highlights | Selecting Brave showed exactly three benefits in the detail panel |
 | Eligible checkboxes | Clear rounded checkboxes; Office disabled with tooltip, Firefox disabled in Browsers |
-| Detail panel | Right-hand 330 px column in Applications, Browsers, Portables and Auxiliary; does not reduce list height. Verified with and without an install note and no overlapping fields |
+| Detail panel | Right-hand 330 px column in Applications, Browsers, Portables and Auxiliary; fills the window height and does not reduce list height. Verified with and without an install note and no overlapping fields |
 | Blocked checkbox | Firefox, Office and Acrobat disabled with a tooltip explaining each vendor limitation |
 | Installer failure feedback | Exit codes and manifest hints surface in the result banner and history; zero-exit installs are verified by detection |
 | Manual installer failure | Integration test simulates a real process exiting with code 57 and asserts the manifest hint reaches the user |
